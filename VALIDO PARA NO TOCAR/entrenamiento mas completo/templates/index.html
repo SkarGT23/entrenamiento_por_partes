@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAN DE ENTRENAMIENTO</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --color-fuego: #ff4d00;
+            --color-fuego-claro: #ff8533;
+            --color-metal: #1a1a1a;
+            --color-metal-claro: #2d2d2d;
+            --color-acero: #4a4a4a;
+            --color-texto: #ffffff;
+            --color-texto-secundario: #cccccc;
+        }
+
+        body {
+            background-color: var(--color-metal);
+            color: var(--color-texto);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(45deg, var(--color-metal), var(--color-acero));
+            color: var(--color-texto);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--color-fuego);
+            box-shadow: 0 4px 15px rgba(255, 77, 0, 0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 77, 0, 0.5);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .biometrics-sidebar {
+            width: 300px;
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--color-fuego);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .biometrics-sidebar h2 {
+            color: var(--color-fuego);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .biometrics-sidebar .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .biometrics-sidebar .form-group {
+            margin-bottom: 0;
+        }
+
+        .biometrics-sidebar .button-group {
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .biometrics-sidebar .btn {
+            width: 100%;
+            min-width: unset;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .biometrics-sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+
+        .form-section {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            border: 1px solid var(--color-fuego);
+        }
+
+        .form-section h2 {
+            color: var(--color-fuego);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-fuego-claro);
+        }
+
+        .form-group label {
+            color: var(--color-fuego-claro);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+        }
+
+        .form-group input, 
+        .form-group select {
+            padding: 1rem;
+            background-color: var(--color-metal);
+            border: 2px solid var(--color-acero);
+            border-radius: 5px;
+            color: var(--color-texto);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus {
+            border-color: var(--color-fuego);
+            box-shadow: 0 0 10px rgba(255, 77, 0, 0.3);
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,77,0,0.3) 0%, rgba(255,77,0,0) 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease-out;
+        }
+
+        .btn:hover::before {
+            transform: scale(1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--color-fuego), var(--color-fuego-claro));
+            color: var(--color-texto);
+            box-shadow: 0 0 20px rgba(255, 77, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 25px rgba(255, 77, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--color-acero), var(--color-metal-claro));
+            color: var(--color-texto);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .logo-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1rem;
+            position: relative;
+            border-radius: 10px;
+            padding: 1rem;
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            border: 2px solid var(--color-fuego);
+            box-shadow: 0 0 20px rgba(255, 77, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.5s ease, transform 0.3s ease;
+        }
+
+        .logo-image.active {
+            opacity: 1;
+        }
+
+        .logo-container:hover .logo-image.active {
+            transform: scale(1.1);
+        }
+
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255,77,0,0.2) 0%, rgba(255,77,0,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .logo-container:hover::after {
+            opacity: 1;
+        }
+
+        .dropdown button {
+            background: linear-gradient(45deg, var(--color-metal), var(--color-acero));
+            color: var(--color-fuego);
+            padding: 1rem 2rem;
+            border: 2px solid var(--color-fuego);
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            margin-top: 1rem;
+        }
+
+        .dropdown button:hover {
+            background: linear-gradient(45deg, var(--color-acero), var(--color-metal));
+            box-shadow: 0 0 15px rgba(255, 77, 0, 0.3);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            min-width: 300px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            border-radius: 5px;
+            border: 1px solid var(--color-fuego);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: var(--color-texto);
+            padding: 1rem;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid var(--color-acero);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--color-metal);
+            color: var(--color-fuego);
+            padding-left: 1.5rem;
+        }
+
+        #graph {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--color-fuego);
+            margin-top: 2rem;
+            min-height: 400px;
+        }
+
+        #mensaje_estimacion {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--color-fuego);
+            color: var(--color-texto);
+        }
+
+        #contentFrame {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: var(--color-metal);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-acero);
+        }
+
+        th {
+            background-color: var(--color-metal);
+            color: var(--color-fuego);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background-color: var(--color-metal);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--color-fuego);
+        }
+
+        .results-section {
+            margin-top: 3rem;
+        }
+
+        .motivational-section {
+            text-align: center;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            border-radius: 15px;
+            border: 2px solid var(--color-fuego);
+            box-shadow: 0 0 30px rgba(255, 77, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .motivational-text {
+            font-size: 1.5rem;
+            color: var(--color-texto);
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards;
+        }
+
+        .motivational-author {
+            font-size: 1rem;
+            color: var(--color-fuego);
+            font-style: italic;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards 0.2s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .motivational-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,77,0,0.1) 0%, rgba(255,77,0,0) 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease-out;
+        }
+
+        .motivational-section:hover::before {
+            transform: scale(1);
+        }
+
+        .results-card {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            border: 1px solid var(--color-fuego);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-result {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            border-left: 4px solid var(--color-fuego);
+        }
+
+        #biometrics-graph {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--color-fuego);
+        }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            margin: 5% auto;
+            padding: 2rem;
+            border: 2px solid var(--color-fuego);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 77, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            color: var(--color-fuego);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--color-fuego-claro);
+            transform: scale(1.1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--color-fuego);
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .imc-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .imc-container {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--color-fuego);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .imc-container h3 {
+            color: var(--color-fuego);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .imc-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-texto);
+            margin-bottom: 0.5rem;
+        }
+
+        .imc-classification {
+            color: var(--color-fuego-claro);
+            font-size: 1.1rem;
+        }
+
+        /* Estilos para la barra de navegación */
+        .nav-bar {
+            background: linear-gradient(45deg, var(--color-metal), var(--color-acero));
+            padding: 1rem;
+            border-bottom: 2px solid var(--color-fuego);
+            box-shadow: 0 4px 15px rgba(255, 77, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--color-texto);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--color-fuego);
+            color: var(--color-texto);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-image {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--color-fuego);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .change-photo-btn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--color-texto);
+            border: none;
+            padding: 0.2rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-image:hover .change-photo-btn {
+            opacity: 1;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            color: var(--color-texto);
+            font-weight: bold;
+        }
+
+        .edit-profile-btn {
+            background: none;
+            border: none;
+            color: var(--color-fuego);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0;
+        }
+
+        /* Estilos para la sección de perfil */
+        .profile-section {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .profile-container {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid var(--color-fuego);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--color-fuego);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-fuego);
+        }
+
+        .stat-label {
+            color: var(--color-texto-secundario);
+            font-size: 0.9rem;
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--color-acero);
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--color-texto);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--color-fuego);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-fuego);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-chart, .measurements-chart {
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .progress-summary, .measurements-table {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .progress-stat {
+            text-align: center;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--color-fuego);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item .date {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--color-texto);
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>PLAN DE ENTRENAMIENTO Y PROGRESO</h1>
+        <div class="user-info">
+            {% if usuario != 'Invitado' %}
+                <div class="user-welcome">
+                    <span>Bienvenido, {{ usuario }}</span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-secondary">Cerrar Sesión</a>
+                </div>
+            {% else %}
+                <div class="user-welcome">
+                    <span>Acceso como Invitado</span>
+                    <a href="{{ url_for('registro') }}" class="btn btn-secondary">Iniciar Sesión</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Barra de navegación con perfil -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-section="main">Inicio</a>
+                <a href="#" class="nav-link" data-section="profile">Mi Perfil</a>
+                <a href="#" class="nav-link" data-section="progress">Mis Avances</a>
+                <a href="#" class="nav-link" data-section="gallery">Galería</a>
+            </div>
+            <div class="user-profile">
+                <div class="profile-image">
+                    <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Foto de perfil" id="profile-pic">
+                    <button class="change-photo-btn" id="change-photo">Cambiar foto</button>
+                </div>
+                <div class="profile-info">
+                    <span class="profile-name">{{ usuario }}</span>
+                    <button class="edit-profile-btn" id="edit-profile">Editar perfil</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal de edición de perfil -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-header">Editar Perfil</h2>
+            <form id="profile-form" class="profile-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="profile-name">Nombre:</label>
+                        <input type="text" id="profile-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-email">Correo electrónico:</label>
+                        <input type="email" id="profile-email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-password">Nueva contraseña:</label>
+                        <input type="password" id="profile-password" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-confirm-password">Confirmar contraseña:</label>
+                        <input type="password" id="profile-confirm-password" name="confirm_password">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sección de perfil -->
+    <div class="profile-section" style="display:none;">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Foto de perfil" id="profile-pic-large">
+                    <button class="change-photo-btn" id="change-photo-large">Cambiar foto</button>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-workouts">0</span>
+                        <span class="stat-label">Entrenamientos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="current-streak">0</span>
+                        <span class="stat-label">Racha actual</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="best-streak">0</span>
+                        <span class="stat-label">Mejor racha</span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-content">
+                <div class="profile-tabs">
+                    <button class="tab-btn active" data-tab="progress">Progreso</button>
+                    <button class="tab-btn" data-tab="measurements">Mediciones</button>
+                    <button class="tab-btn" data-tab="gallery">Galería</button>
+                </div>
+                <div class="tab-content active" id="progress-tab">
+                    <div class="progress-chart" id="progress-chart"></div>
+                    <div class="progress-summary">
+                        <h3>Resumen de Progreso</h3>
+                        <div class="progress-stats">
+                            <div class="progress-stat">
+                                <span class="stat-label">Peso inicial</span>
+                                <span class="stat-value" id="initial-weight">-</span>
+                            </div>
+                            <div class="progress-stat">
+                                <span class="stat-label">Peso actual</span>
+                                <span class="stat-value" id="current-weight">-</span>
+                            </div>
+                            <div class="progress-stat">
+                                <span class="stat-label">Cambio total</span>
+                                <span class="stat-value" id="weight-change">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="measurements-tab">
+                    <div class="measurements-chart" id="measurements-chart"></div>
+                    <div class="measurements-table">
+                        <h3>Historial de Mediciones</h3>
+                        <table id="measurements-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Peso</th>
+                                    <th>IMC</th>
+                                    <th>Cintura</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-content" id="gallery-tab">
+                    <div class="gallery-grid" id="progress-gallery">
+                        <!-- Las fotos se cargarán dinámicamente -->
+                    </div>
+                    <button class="btn btn-primary" id="add-photo">Añadir foto de progreso</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="form-section">
+                <h2>Define tus parámetros de entrenamiento</h2>
+                <form id="form-entrenamiento">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="peso_deseado">Peso Deseado (kg):</label>
+                            <input type="number" id="peso_deseado" name="peso_deseado" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="repeticion_maxima">Repetición Máxima (kg):</label>
+                            <input type="number" id="repeticion_maxima" name="repeticion_maxima" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dias_entrenamiento">Días de Entrenamiento a la Semana:</label>
+                            <input type="number" id="dias_entrenamiento" name="dias_entrenamiento" value="3" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="meses">Meses de Entrenamiento:</label>
+                            <input type="number" id="meses" name="meses" value="3" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ejercicio">Selecciona el Ejercicio:</label>
+                            <select id="ejercicio" name="ejercicio">
+                                <option value="Sentadillas">Sentadillas</option>
+                                <option value="Flexiones">Flexiones</option>
+                                <option value="Dominadas">Dominadas</option>
+                                <option value="Peso Muerto">Peso Muerto</option>
+                                <option value="Press de Banca">Press de Banca</option>
+                                <option value="Remo con Barra">Remo con Barra</option>
+                                <option value="Planchas">Planchas</option>
+                                <option value="Press Militar con Barra">Press Militar con Barra</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Calcular Plan de Entrenamiento</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="dropdown">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Original" class="logo-image active">
+                    <img src="{{ url_for('static', filename='images/logo-montana.png') }}" alt="Logo Montaña" class="logo-image">
+                    <img src="{{ url_for('static', filename='images/logo-bokeh.png') }}" alt="Logo Bokeh" class="logo-image">
+                    <img src="{{ url_for('static', filename='images/logo-negro.png') }}" alt="Logo Negro" class="logo-image">
+                    <img src="{{ url_for('static', filename='images/logo-simple.png') }}" alt="Logo Simple" class="logo-image">
+                </div>
+                <button>RUTINA COMPLEMENTARIA</button>
+                <div class="dropdown-content">
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/hipertrofia.html')">Hipertrofia: Aumentar la masa muscular, alto volumen, repeticiones de 6-12.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/fuerza.html')">Fuerza: Maximizar la fuerza, baja cantidad de repeticiones (1-5), alta carga.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/weider.html')">Weider: Culturismo clásico, cada grupo muscular entrenado una vez por semana.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/arnold.html')">Arnold: Rutina avanzada, entrenamientos dobles y alta frecuencia para los grupos musculares.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/full-body.html')">Full Body: Entrenamiento total del cuerpo en cada sesión, ideal para principiantes.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/push-pull.html')">Push-Pull-Legs (PPL): Dividir los entrenamientos por tipo de movimiento, adaptable a 3-6 días.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('/static/rutinas/rutina complementaria/circuito.html')">Circuito: Mejora cardiovascular y tonificación muscular.</a>
+                </div>
+            </div>
+
+            <div class="motivational-section" id="motivational-container">
+                <p class="motivational-text" id="motivational-text"></p>
+                <p class="motivational-author" id="motivational-author"></p>
+            </div>
+
+            <div id="mensaje_estimacion" style="display:none;"></div>
+            
+            <iframe id="contentFrame" width="100%" height="600px"></iframe>
+
+            <div class="results-section">
+                <div id="graph" style="display:none;"></div>
+                <div class="button-group">
+                    <button id="toggle-graph-button" class="btn btn-secondary" onclick="toggleGraph()">Abrir Gráfica</button>
+                    <button id="downloadBtn" class="btn btn-primary" style="display:none;">Descargar PDF</button>
+                </div>
+            </div>
+
+            <div class="table-container" id="tabla-plan" style="display:none;"></div>
+
+            <div class="imc-section" style="display:none;">
+                <div class="imc-container">
+                    <h3>Tu IMC</h3>
+                    <div class="imc-value" id="imc-display"></div>
+                    <div class="imc-classification" id="imc-classification"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="biometrics-sidebar">
+            <h2>Control de Datos Biométricos</h2>
+            <form id="form-biometrics">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="altura">Altura (cm):</label>
+                        <input type="number" id="altura" name="altura" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="peso_actual">Peso Actual (kg):</label>
+                        <input type="number" id="peso_actual" name="peso_actual" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edad">Edad:</label>
+                        <input type="number" id="edad" name="edad" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="perimetro_cintura">Perímetro de Cintura (cm):</label>
+                        <input type="number" id="perimetro_cintura" name="perimetro_cintura">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Calcular Métricas</button>
+                    <button type="button" class="btn btn-secondary" id="historial-btn">Ver Historial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleGraph() {
+            const graphDiv = document.getElementById("graph");
+            const button = document.getElementById("toggle-graph-button");
+
+            if (graphDiv.style.display === "none") {
+                graphDiv.style.display = "block";
+                button.innerText = "Cerrar Gráfica";
+            } else {
+                graphDiv.style.display = "none";
+                button.innerText = "Abrir Gráfica";
+            }
+        }
+
+        document.getElementById("form-entrenamiento").onsubmit = function(event) {
+            event.preventDefault();
+
+            const pesoDeseado = parseFloat(document.getElementById("peso_deseado").value);
+            const repeticionMaxima = parseFloat(document.getElementById("repeticion_maxima").value);
+            const diasEntrenamiento = parseInt(document.getElementById("dias_entrenamiento").value);
+            const meses = parseInt(document.getElementById("meses").value);
+            const ejercicio = document.getElementById("ejercicio").value;
+
+            fetch("/plan_entrenamiento", {
+                method: 'POST',
+                body: new FormData(document.getElementById("form-entrenamiento"))
+            })
+            .then(response => response.json())
+            .then(data => {
+                const plan = data.plan;
+                const mensajeEstimacion = data.mensaje_estimacion;
+
+                const mensajeDiv = document.getElementById("mensaje_estimacion");
+                mensajeDiv.style.display = "block";
+                mensajeDiv.innerHTML = mensajeEstimacion;
+
+                const tablaPlanDiv = document.getElementById("tabla-plan");
+                tablaPlanDiv.style.display = "block";
+                let tablaHTML = "<table><tr><th>Mes</th><th>Semana</th><th>Día</th><th>Ejercicio</th><th>Peso (kg)</th><th>Estado</th></tr>";
+
+                let diasDescanso;
+                switch(diasEntrenamiento) {
+                    case 1: diasDescanso = 6; break;
+                    case 2: diasDescanso = 5; break;
+                    case 3: diasDescanso = 4; break;
+                    case 4: diasDescanso = 3; break;
+                    case 5: diasDescanso = 2; break;
+                    case 6: diasDescanso = 1; break;
+                    case 0: diasDescanso = 7; break;
+                    default: diasDescanso = 7; break;
+                }
+
+                let diaContador = 1;
+                let mesContador = 1;
+                let semanaContador = 1;
+                let cicloEntrenamiento = 1;
+                let pesoActual = repeticionMaxima * 0.5;
+
+                for (let mes = 1; mes <= meses; mes++) {
+                    tablaHTML += `<tr><td colspan="6" style="font-weight: bold; background-color: var(--color-metal); color: var(--color-fuego); text-align: center;">MES ${mes}</td></tr>`;
+
+                    for (let dia = 1; dia <= 28; dia++) {
+                        let estado = (cicloEntrenamiento <= diasEntrenamiento) ? "Entrenamiento" : "Descanso";
+
+                        if (estado === "Entrenamiento") {
+                            tablaHTML += `<tr>
+                                <td>${mesContador}</td>
+                                <td>${semanaContador}</td>
+                                <td>${diaContador}</td>
+                                <td>${ejercicio}</td>
+                                <td>${pesoActual.toFixed(2)}</td>
+                                <td style="color: var(--color-fuego-claro);">${estado}</td>
+                            </tr>`;
+                            pesoActual += 2.5;
+                        } else {
+                            tablaHTML += `<tr>
+                                <td>${mesContador}</td>
+                                <td>${semanaContador}</td>
+                                <td>${diaContador}</td>
+                                <td>Descanso</td>
+                                <td>-</td>
+                                <td style="color: var(--color-texto-secundario);">${estado}</td>
+                            </tr>`;
+                        }
+
+                        diaContador++;
+
+                        if (diaContador > 7) {
+                            diaContador = 1;
+                            semanaContador++;
+                        }
+                        if (semanaContador > 4) {
+                            semanaContador = 1;
+                            mesContador++;
+                        }
+
+                        cicloEntrenamiento++;
+                        if (cicloEntrenamiento > 7) {
+                            cicloEntrenamiento = 1;
+                        }
+                    }
+                }
+
+                tablaHTML += "</table>";
+                tablaPlanDiv.innerHTML = tablaHTML;
+
+                // Mostrar la gráfica inmediatamente
+                const graphDiv = document.getElementById("graph");
+                graphDiv.style.display = "block";
+                
+                // Crear la gráfica con Plotly
+                const trace = {
+                    x: plan.map(item => `${item.mes} - ${item.semana}`),
+                    y: plan.map(item => item.peso),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Progreso'
+                };
+
+                const layout = {
+                    title: `Progreso de ${ejercicio}`,
+                    xaxis: { title: 'Mes - Semana' },
+                    yaxis: { title: 'Peso (kg)' },
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#ffffff' },
+                    margin: { t: 50, b: 50, l: 50, r: 50 }
+                };
+
+                Plotly.newPlot('graph', [trace], layout);
+
+                const downloadBtn = document.getElementById("downloadBtn");
+                downloadBtn.style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const table = document.querySelector('#tabla-plan table');
+            doc.autoTable({ html: table });
+            doc.save('plan_entrenamiento.pdf');
+        });
+
+        function loadIframe(url) {
+            document.getElementById('contentFrame').src = url;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initLogoCarousel() {
+            const logos = Array.from(document.querySelectorAll('.logo-image'));
+            let currentIndex = 0;
+
+            function showNextLogo() {
+                logos.forEach(logo => logo.classList.remove('active'));
+                logos[currentIndex].classList.add('active');
+                currentIndex = (currentIndex + 1) % logos.length;
+            }
+
+            setInterval(showNextLogo, 4000); // Cambiar cada 4 segundos
+        }
+
+        // Iniciar el carrusel cuando se carga la página
+        document.addEventListener('DOMContentLoaded', initLogoCarousel);
+
+        const motivationalQuotes = [
+            {
+                text: "El éxito no es definitivo, el fracaso no es fatal: lo que cuenta es el coraje para continuar.",
+                author: "Winston Churchill"
+            },
+            {
+                text: "La disciplina es el puente entre tus metas y tus logros.",
+                author: "Jim Rohn"
+            },
+            {
+                text: "El dolor que sientes hoy será la fuerza que sentirás mañana.",
+                author: "Arnold Schwarzenegger"
+            },
+            {
+                text: "No cuentes los días, haz que los días cuenten.",
+                author: "Muhammad Ali"
+            },
+            {
+                text: "El único mal entrenamiento es el que no hiciste.",
+                author: "T-DYNAMI"
+            },
+            {
+                text: "Tu cuerpo puede soportar casi cualquier cosa. Es tu mente la que debes convencer.",
+                author: "T-DYNAMI"
+            },
+            {
+                text: "Cada repetición te acerca más a tu mejor versión.",
+                author: "T-DYNAMI"
+            },
+            {
+                text: "Los límites, como los miedos, son a menudo solo ilusiones.",
+                author: "Michael Jordan"
+            },
+            {
+                text: "La diferencia entre lo imposible y lo posible reside en la determinación.",
+                author: "Tommy Lasorda"
+            },
+            {
+                text: "El momento que das por vencido es el momento que dejas que otro gane.",
+                author: "T-DYNAMI"
+            }
+        ];
+
+        function showRandomQuote() {
+            const quoteContainer = document.getElementById('motivational-container');
+            const textElement = document.getElementById('motivational-text');
+            const authorElement = document.getElementById('motivational-author');
+            
+            // Reiniciar animaciones
+            textElement.style.animation = 'none';
+            authorElement.style.animation = 'none';
+            
+            // Forzar reflow
+            void textElement.offsetWidth;
+            void authorElement.offsetWidth;
+            
+            // Restaurar animaciones
+            textElement.style.animation = 'fadeInUp 0.5s forwards';
+            authorElement.style.animation = 'fadeInUp 0.5s forwards 0.2s';
+            
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            textElement.textContent = `"${randomQuote.text}"`;
+            authorElement.textContent = `- ${randomQuote.author}`;
+        }
+
+        // Mostrar una cita al cargar la página
+        document.addEventListener('DOMContentLoaded', showRandomQuote);
+
+        // Cambiar la cita cada 10 segundos
+        setInterval(showRandomQuote, 10000);
+
+        document.getElementById("form-biometrics").onsubmit = function(event) {
+            event.preventDefault();
+            
+            const altura = parseFloat(document.getElementById("altura").value) / 100; // convertir a metros
+            const peso = parseFloat(document.getElementById("peso_actual").value);
+            const edad = parseInt(document.getElementById("edad").value);
+            const cintura = parseFloat(document.getElementById("perimetro_cintura").value) || 0;
+
+            // Calcular IMC
+            const imc = peso / (altura * altura);
+            
+            // Determinar clasificación
+            let clasificacion = "";
+            if (imc < 18.5) clasificacion = "Bajo peso";
+            else if (imc < 25) clasificacion = "Peso normal";
+            else if (imc < 30) clasificacion = "Sobrepeso";
+            else clasificacion = "Obesidad";
+
+            // Calcular metabolismo basal (fórmula de Harris-Benedict)
+            const metabolismoBasal = 66 + (13.7 * peso) + (5 * (altura * 100)) - (6.8 * edad);
+
+            // Mostrar resultados en el modal
+            document.getElementById("imc-result").innerHTML = `<strong>IMC:</strong> ${imc.toFixed(2)}`;
+            document.getElementById("clasificacion-result").innerHTML = `<strong>Clasificación:</strong> ${clasificacion}`;
+            document.getElementById("metabolismo-result").innerHTML = `<strong>Metabolismo Basal:</strong> ${metabolismoBasal.toFixed(0)} kcal/día`;
+
+            // Mostrar IMC compacto debajo de la tabla
+            document.querySelector(".imc-section").style.display = "block";
+            document.getElementById("imc-display").textContent = imc.toFixed(2);
+            document.getElementById("imc-classification").textContent = clasificacion;
+
+            // Guardar datos en localStorage
+            const fecha = new Date().toISOString().split('T')[0];
+            const historicalData = JSON.parse(localStorage.getItem('biometricsData') || '[]');
+            historicalData.push({
+                fecha,
+                imc,
+                peso,
+                cintura
+            });
+            localStorage.setItem('biometricsData', JSON.stringify(historicalData));
+
+            // Crear gráfica de progreso
+            const trace1 = {
+                x: historicalData.map(d => d.fecha),
+                y: historicalData.map(d => d.imc),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'IMC',
+                line: {
+                    color: '#ff4d00'
+                }
+            };
+
+            const trace2 = {
+                x: historicalData.map(d => d.fecha),
+                y: historicalData.map(d => d.peso),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Peso',
+                yaxis: 'y2',
+                line: {
+                    color: '#ff8533'
+                }
+            };
+
+            const layout = {
+                title: 'Progreso de Métricas Corporales',
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#ffffff' },
+                xaxis: { title: 'Fecha' },
+                yaxis: { title: 'IMC', side: 'left' },
+                yaxis2: {
+                    title: 'Peso (kg)',
+                    overlaying: 'y',
+                    side: 'right'
+                },
+                showlegend: true,
+                legend: {
+                    x: 0,
+                    y: 1.2
+                }
+            };
+
+            Plotly.newPlot('biometrics-graph', [trace1, trace2], layout);
+            
+            // Mostrar el modal
+            document.getElementById("biometrics-modal").style.display = "block";
+        };
+
+        document.getElementById("historial-btn").onclick = function() {
+            const historicalData = JSON.parse(localStorage.getItem('biometricsData') || '[]');
+            if (historicalData.length > 0) {
+                // Actualizar gráfica con datos históricos
+                const trace1 = {
+                    x: historicalData.map(d => d.fecha),
+                    y: historicalData.map(d => d.imc),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'IMC'
+                };
+
+                const trace2 = {
+                    x: historicalData.map(d => d.fecha),
+                    y: historicalData.map(d => d.peso),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Peso',
+                    yaxis: 'y2'
+                };
+
+                const layout = {
+                    title: 'Historial de Métricas Corporales',
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#ffffff' },
+                    xaxis: { title: 'Fecha' },
+                    yaxis: { title: 'IMC' },
+                    yaxis2: {
+                        title: 'Peso (kg)',
+                        overlaying: 'y',
+                        side: 'right'
+                    }
+                };
+
+                Plotly.newPlot('biometrics-graph', [trace1, trace2], layout);
+                
+                // Mostrar el modal
+                document.getElementById("biometrics-modal").style.display = "block";
+            }
+        };
+
+        // Cerrar el modal cuando se hace clic en la X
+        document.querySelector(".close-modal").onclick = function() {
+            document.getElementById("biometrics-modal").style.display = "none";
+        }
+
+        // Cerrar el modal cuando se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById("biometrics-modal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Funcionalidad de navegación
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.dataset.section;
+                
+                // Actualizar enlaces activos
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+
+                // Mostrar/ocultar secciones
+                if (section === 'profile') {
+                    document.querySelector('.profile-section').style.display = 'block';
+                    document.querySelector('.container').style.display = 'none';
+                } else {
+                    document.querySelector('.profile-section').style.display = 'none';
+                    document.querySelector('.container').style.display = 'block';
+                }
+            });
+        });
+
+        // Funcionalidad de pestañas del perfil
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+                
+                // Actualizar botones activos
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Mostrar/ocultar contenido
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `${tab}-tab`) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Funcionalidad de cambio de foto
+        document.getElementById('change-photo').addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profile-pic').src = e.target.result;
+                        document.getElementById('profile-pic-large').src = e.target.result;
+                        // Aquí podrías enviar la imagen al servidor
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        });
+
+        // Funcionalidad de edición de perfil
+        document.getElementById('edit-profile').addEventListener('click', function() {
+            document.getElementById('profile-modal').style.display = 'block';
+        });
+
+        // Cerrar modal de perfil
+        document.querySelectorAll('.close-modal').forEach(close => {
+            close.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+
+        // Manejo del formulario de perfil
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para guardar los cambios del perfil
+            document.getElementById('profile-modal').style.display = 'none';
+        });
+
+        // Cargar datos del perfil
+        function loadProfileData() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            
+            // Actualizar estadísticas
+            document.getElementById('total-workouts').textContent = userData.totalWorkouts || 0;
+            document.getElementById('current-streak').textContent = userData.currentStreak || 0;
+            document.getElementById('best-streak').textContent = userData.bestStreak || 0;
+
+            // Actualizar datos de progreso
+            const measurements = JSON.parse(localStorage.getItem('biometricsData') || '[]');
+            if (measurements.length > 0) {
+                const firstMeasurement = measurements[0];
+                const lastMeasurement = measurements[measurements.length - 1];
+                
+                document.getElementById('initial-weight').textContent = `${firstMeasurement.peso} kg`;
+                document.getElementById('current-weight').textContent = `${lastMeasurement.peso} kg`;
+                document.getElementById('weight-change').textContent = 
+                    `${(lastMeasurement.peso - firstMeasurement.peso).toFixed(1)} kg`;
+            }
+
+            // Actualizar tabla de mediciones
+            const tbody = document.querySelector('#measurements-table tbody');
+            tbody.innerHTML = '';
+            measurements.forEach(m => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${m.fecha}</td>
+                        <td>${m.peso} kg</td>
+                        <td>${m.imc.toFixed(2)}</td>
+                        <td>${m.cintura} cm</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', loadProfileData);
+    </script>
+</body>
+</html>

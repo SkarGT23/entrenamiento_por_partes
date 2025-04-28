@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Progreso del Ejercicio{% endblock %}
+
+{% block content %}
+<div class="progreso-ejercicio-container">
+    <div class="ejercicio-header">
+        <h1>{{ exercise.name }}</h1>
+        <div class="ejercicio-badges">
+            <span class="tipo-badge {{ exercise.exercise_type }}">{{ exercise.exercise_type }}</span>
+            <span class="musculo-badge">{{ exercise.target_muscle }}</span>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-dumbbell"></i>
+            <div class="stat-content">
+                <span class="stat-label">Peso Actual</span>
+                <span class="stat-value">{{ exercise.weight }} kg</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-arrow-up"></i>
+            <div class="stat-content">
+                <span class="stat-label">Incremento</span>
+                <span class="stat-value">{{ exercise.increment }} kg</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-redo"></i>
+            <div class="stat-content">
+                <span class="stat-label">Reps Máximas</span>
+                <span class="stat-value">{{ exercise.max_reps }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-fire"></i>
+            <div class="stat-content">
+                <span class="stat-label">Tipo de Fallo</span>
+                <span class="stat-value">{{ exercise.failure_type }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="progreso-content">
+        <div class="progreso-grafico">
+            <div class="card">
+                <h2>Evolución del Peso</h2>
+                {{ graph|safe }}
+            </div>
+        </div>
+
+        <div class="progreso-tabla card">
+            <div class="tabla-header">
+                <h2>Historial de Progreso</h2>
+                <div class="tabla-filtros">
+                    <select id="filtro-periodo" class="filtro-select">
+                        <option value="todos">Todo el periodo</option>
+                        <option value="mes">Último mes</option>
+                        <option value="trimestre">Último trimestre</option>
+                        <option value="semestre">Último semestre</option>
+                    </select>
+                </div>
+            </div>
+            <div class="tabla-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th>Semana</th>
+                            <th>Día</th>
+                            <th>Estado</th>
+                            <th>Peso (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mes, semana, dia, status, peso in progreso_data %}
+                        <tr>
+                            <td>{{ mes }}</td>
+                            <td>{{ semana }}</td>
+                            <td>{{ dia }}</td>
+                            <td>
+                                <span class="status-badge {% if 'Entreno' in status %}entreno{% else %}descanso{% endif %}">
+                                    {{ status }}
+                                </span>
+                            </td>
+                            <td>{{ peso }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="advertencia card">
+        <div class="advertencia-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>{{ mensaje_advertencia.titulo }}</h3>
+        </div>
+        <ul>
+            {% for instruccion in mensaje_advertencia.instrucciones %}
+            <li>{{ instruccion }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<style>
+.progreso-ejercicio-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.ejercicio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.ejercicio-header h1 {
+    margin: 0;
+    color: #ff4d00;
+}
+
+.ejercicio-badges {
+    display: flex;
+    gap: 10px;
+}
+
+.tipo-badge, .musculo-badge {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.tipo-badge.compound {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
+.tipo-badge.isolation {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+}
+
+.tipo-badge.bodyweight {
+    background: rgba(0, 191, 255, 0.2);
+    color: #00bfff;
+}
+
+.musculo-badge {
+    background: rgba(255, 77, 0, 0.2);
+    color: #ff4d00;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid rgba(255, 77, 0, 0.1);
+}
+
+.stat-card i {
+    font-size: 2em;
+    color: #ff4d00;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #888;
+}
+
+.stat-value {
+    font-size: 1.4em;
+    color: white;
+    font-weight: bold;
+}
+
+.progreso-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255, 77, 0, 0.1);
+}
+
+.tabla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.tabla-header h2 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #ff4d00;
+}
+
+.filtro-select {
+    padding: 8px 15px;
+    border: 1px solid rgba(255, 77, 0, 0.3);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 14px;
+}
+
+.tabla-container {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: rgba(255, 77, 0, 0.1);
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    color: #ff4d00;
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.status-badge.entreno {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
+.status-badge.descanso {
+    background: rgba(255, 77, 0, 0.2);
+    color: #ff4d00;
+}
+
+.advertencia {
+    background: rgba(255, 77, 0, 0.1);
+}
+
+.advertencia-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.advertencia-header i {
+    color: #ff4d00;
+    font-size: 1.5em;
+}
+
+.advertencia-header h3 {
+    margin: 0;
+    color: #ff4d00;
+}
+
+.advertencia ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.advertencia li {
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+@media (max-width: 992px) {
+    .progreso-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .ejercicio-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tabla-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filtroPeriodo = document.getElementById('filtro-periodo');
+    const tabla = document.querySelector('.table tbody');
+    const filas = Array.from(tabla.querySelectorAll('tr'));
+    
+    filtroPeriodo.addEventListener('change', function() {
+        const periodo = this.value;
+        const totalFilas = filas.length;
+        
+        filas.forEach((fila, index) => {
+            if (periodo === 'todos') {
+                fila.style.display = '';
+            } else {
+                const mostrarDesde = {
+                    'mes': totalFilas - 30,
+                    'trimestre': totalFilas - 90,
+                    'semestre': totalFilas - 180
+                }[periodo] || 0;
+                
+                fila.style.display = index >= mostrarDesde ? '' : 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

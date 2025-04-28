@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Sistema de Entrenamiento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">Sistema de Entrenamiento</a>
+            </div>
+            {% if session.usuario %}
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="{{ url_for('progreso') }}" class="{% if request.endpoint in ['progreso', 'progreso_ejercicio'] %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> Progreso
+                </a>
+                <a href="{{ url_for('objetivos') }}" class="{% if request.endpoint == 'objetivos' %}active{% endif %}">
+                    <i class="fas fa-bullseye"></i> Objetivos
+                </a>
+                <a href="{{ url_for('galeria') }}" class="{% if request.endpoint == 'galeria' %}active{% endif %}">
+                    <i class="fas fa-images"></i> Galería
+                </a>
+                <a href="{{ url_for('configuracion') }}" class="{% if request.endpoint == 'configuracion' %}active{% endif %}">
+                    <i class="fas fa-cog"></i> Configuración
+                </a>
+            </div>
+            <div class="user-menu">
+                <button class="user-menu-button">
+                    <i class="fas fa-user"></i>
+                    {{ session.usuario }}
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="user-menu-dropdown">
+                    <a href="{{ url_for('perfil') }}">
+                        <i class="fas fa-user-circle"></i> Mi Perfil
+                    </a>
+                    <a href="{{ url_for('logout') }}">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Sistema de Entrenamiento. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Toggle user menu
+        document.querySelector('.user-menu-button').addEventListener('click', function() {
+            document.querySelector('.user-menu-dropdown').classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.user-menu-button')) {
+                var dropdowns = document.getElementsByClassName('user-menu-dropdown');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        });
+
+        // Auto-hide alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

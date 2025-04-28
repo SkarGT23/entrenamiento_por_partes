@@ -1,0 +1,271 @@
+:root {
+    --color-fondo: #1a1a1a;
+    --color-texto: #ffffff;
+    --color-texto-secundario: #a0a0a0;
+    --color-fuego: #ff4d00;
+    --color-fuego-claro: #ff8533;
+    --color-metal: #2d2d2d;
+    --color-metal-claro: #3d3d3d;
+    --color-acero: #4a4a4a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header y Navegación */
+.header {
+    background: var(--color-metal);
+    border-bottom: 2px solid var(--color-fuego);
+    padding: 1rem 0;
+}
+
+.navbar {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    color: var(--color-fuego);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--color-texto);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: var(--color-fuego);
+    color: var(--color-texto);
+}
+
+/* Menú de Usuario */
+.user-menu {
+    position: relative;
+}
+
+.user-menu-button {
+    background: none;
+    border: none;
+    color: var(--color-texto);
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.user-menu-button:hover {
+    background: var(--color-metal-claro);
+}
+
+.user-menu-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--color-metal);
+    border: 1px solid var(--color-fuego);
+    border-radius: 5px;
+    min-width: 200px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.user-menu-dropdown.show {
+    display: block;
+}
+
+.user-menu-dropdown a {
+    display: block;
+    padding: 0.8rem 1rem;
+    color: var(--color-texto);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.user-menu-dropdown a:hover {
+    background: var(--color-fuego);
+    color: var(--color-texto);
+}
+
+/* Contenido Principal */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Alertas */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    animation: slideIn 0.3s ease-out;
+    transition: opacity 0.3s ease;
+}
+
+.alert-success {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid #00ff00;
+    color: #00ff00;
+}
+
+.alert-error {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    color: #ff0000;
+}
+
+.alert-info {
+    background: rgba(0, 0, 255, 0.1);
+    border: 1px solid #0000ff;
+    color: #0000ff;
+}
+
+/* Footer */
+.footer {
+    background: var(--color-metal);
+    color: var(--color-texto-secundario);
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+}
+
+/* Animaciones */
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .user-menu {
+        width: 100%;
+        text-align: center;
+    }
+
+    .user-menu-dropdown {
+        position: static;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Botones */
+.btn-primary,
+.btn-calculate {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: var(--color-fuego);
+    color: var(--color-texto);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-primary:hover,
+.btn-calculate:hover {
+    background: var(--color-fuego-claro);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active,
+.btn-calculate:active {
+    transform: translateY(0);
+}
+
+.btn-primary i,
+.btn-calculate i {
+    margin-right: 0.5rem;
+}
+
+.btn-calculate {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* Formularios */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-texto);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--color-metal);
+    border: 1px solid var(--color-acero);
+    border-radius: 5px;
+    color: var(--color-texto);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-fuego);
+    box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.2);
+} 

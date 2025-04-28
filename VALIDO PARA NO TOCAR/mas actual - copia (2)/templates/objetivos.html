@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Mis Objetivos de Entrenamiento</h2>
+    
+    <!-- Formulario para añadir nuevo objetivo -->
+    <div class="form-section card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Añadir Nuevo Objetivo</h3>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('añadir_objetivo') }}" method="POST">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="ejercicio" class="form-label">Ejercicio:</label>
+                            <select name="ejercicio" id="ejercicio" class="form-select" required>
+                                <option value="">Selecciona un ejercicio</option>
+                                {% for exercise in exercises %}
+                                <option value="{{ exercise.name }}" data-type="{{ exercise.exercise_type }}" data-muscle="{{ exercise.target_muscle }}">
+                                    {{ exercise.name }} ({{ exercise.target_muscle }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="musculo_objetivo" class="form-label">Músculo Objetivo:</label>
+                            <input type="text" name="musculo_objetivo" id="musculo_objetivo" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="peso_objetivo" class="form-label">Peso Objetivo (kg):</label>
+                            <input type="number" step="0.1" name="peso_objetivo" id="peso_objetivo" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="peso_actual" class="form-label">Peso Actual (kg):</label>
+                            <input type="number" step="0.1" name="peso_actual" id="peso_actual" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="incremento" class="form-label">Incremento Semanal (kg):</label>
+                            <input type="number" step="0.1" name="incremento" id="incremento" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="repeticiones" class="form-label">Rango de Repeticiones:</label>
+                            <input type="text" name="repeticiones" id="repeticiones" class="form-control" value="8-12" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">Añadir Objetivo</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de objetivos -->
+    <div class="objetivos-grid">
+        {% for objetivo in objetivos %}
+        <div class="objetivo-card card">
+            <div class="card-header">
+                <h3 class="mb-0">{{ objetivo.ejercicio }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="objetivo-details">
+                    <div class="progress mb-3">
+                        {% set progreso = ((objetivo.peso_actual / objetivo.peso_objetivo) * 100) | round %}
+                        <div class="progress-bar" role="progressbar" style="width: {{ progreso }}%">
+                            {{ progreso }}%
+                        </div>
+                    </div>
+                    <p><strong>Peso Objetivo:</strong> {{ objetivo.peso_objetivo }} kg</p>
+                    <p><strong>Peso Actual:</strong> {{ objetivo.peso_actual }} kg</p>
+                    <p><strong>Incremento:</strong> {{ objetivo.incremento }} kg</p>
+                    <p><strong>Repeticiones:</strong> {{ objetivo.repeticiones }}</p>
+                    <p><strong>Músculo:</strong> {{ objetivo.musculo_objetivo }}</p>
+                </div>
+                
+                <!-- Formulario de seguimiento -->
+                <form action="{{ url_for('registrar_entrenamiento') }}" method="POST" class="seguimiento-form">
+                    <input type="hidden" name="objetivo_id" value="{{ objetivo.id }}">
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label">¿Has entrenado hoy?</label>
+                        <div class="radio-group">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="entrenado" value="true" class="form-check-input" required>
+                                <label class="form-check-label">Sí</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="entrenado" value="false" class="form-check-input" required>
+                                <label class="form-check-label">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group entrenado-details mb-3" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="peso_utilizado_{{ objetivo.id }}" class="form-label">Peso Utilizado (kg):</label>
+                                <input type="number" step="0.1" name="peso_utilizado" id="peso_utilizado_{{ objetivo.id }}" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="repeticiones_realizadas_{{ objetivo.id }}" class="form-label">Repeticiones Realizadas:</label>
+                                <input type="text" name="repeticiones_realizadas" id="repeticiones_realizadas_{{ objetivo.id }}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Registrar Entrenamiento</button>
+                </form>
+                
+                <!-- Formulario para actualizar peso -->
+                <form action="{{ url_for('actualizar_objetivo') }}" method="POST" class="actualizar-form mt-3">
+                    <input type="hidden" name="objetivo_id" value="{{ objetivo.id }}">
+                    
+                    <div class="form-group">
+                        <label for="nuevo_peso_{{ objetivo.id }}" class="form-label">Actualizar Peso Actual:</label>
+                        <div class="input-group">
+                            <input type="number" step="0.1" name="peso_actual" id="nuevo_peso_{{ objetivo.id }}" class="form-control" required>
+                            <button type="submit" class="btn btn-secondary">Actualizar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.objetivos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.objetivo-card {
+    transition: transform 0.2s;
+}
+
+.objetivo-card:hover {
+    transform: translateY(-5px);
+}
+
+.objetivo-details {
+    margin-bottom: 20px;
+}
+
+.objetivo-details p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.progress {
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    margin: 10px 0;
+}
+
+.form-section {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.btn {
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar/ocultar detalles de entrenamiento según la selección
+    document.querySelectorAll('input[name="entrenado"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const detalles = this.closest('form').querySelector('.entrenado-details');
+            detalles.style.display = this.value === 'true' ? 'block' : 'none';
+        });
+    });
+
+    // Actualizar músculo objetivo cuando se selecciona un ejercicio
+    document.getElementById('ejercicio').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.value) {
+            document.getElementById('musculo_objetivo').value = selectedOption.dataset.muscle;
+        }
+    });
+});
+</script>
+{% endblock %} 

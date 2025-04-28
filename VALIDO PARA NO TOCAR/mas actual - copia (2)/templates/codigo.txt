@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Entrenamiento</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script> <!-- jsPDF AutoTable -->
+    <style>
+        /* Estilo para el botón desplegable */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Plan de Entrenamiento y Progreso</h1>
+    </header>
+
+    <div class="container">
+        <h2>Define tus parámetros</h2>
+        <form id="form-entrenamiento">
+            <!-- Formularios para la información del usuario y del plan de entrenamiento -->
+            <div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div>
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" required>
+            </div>
+
+            <div>
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div>
+                <label for="usuario">Nombre de Usuario:</label>
+                <input type="text" id="usuario" name="usuario" readonly>
+                <button type="button" onclick="generarUsuario()">Generar Usuario</button>
+            </div>
+
+            <div>
+                <label for="contraseña">Contraseña:</label>
+                <input type="password" id="contraseña" name="contraseña" required>
+                <button type="button" onclick="generarContraseña()">Generar Contraseña</button>
+            </div>
+
+            <div>
+                <label for="peso_deseado">Peso Deseado (kg):</label>
+                <input type="number" id="peso_deseado" name="peso_deseado" required>
+            </div>
+
+            <div>
+                <label for="repeticion_maxima">Repetición Máxima (kg):</label>
+                <input type="number" id="repeticion_maxima" name="repeticion_maxima" required>
+            </div>
+
+            <div>
+                <label for="dias_entrenamiento">Días de Entrenamiento a la Semana:</label>
+                <input type="number" id="dias_entrenamiento" name="dias_entrenamiento" value="3" required>
+            </div>
+
+            <div>
+                <label for="meses">Meses de Entrenamiento:</label>
+                <input type="number" id="meses" name="meses" value="3" required>
+            </div>
+
+            <div>
+                <label for="ejercicio">Selecciona el Ejercicio:</label>
+                <select id="ejercicio" name="ejercicio">
+                    <option value="Sentadillas">Sentadillas</option>
+                    <option value="Flexiones">Flexiones</option>
+                    <option value="Dominadas">Dominadas</option>
+                    <option value="Peso Muerto">Peso Muerto</option>
+                    <option value="Press de Banca">Press de Banca</option>
+                    <option value="Remo con Barra">Remo con Barra</option>
+                    <option value="Planchas">Planchas</option>
+                    <option value="Press Militar con Barra">Press Militar con Barra</option>
+                </select>
+            </div>
+
+            <button type="submit">Calcular Plan de Entrenamiento</button>
+        </form>
+
+        <!-- Botón Desplegable para Añadir Rutina Complementaria -->
+        <div class="dropdown">
+            <button>AÑADIR RUTINA COMPLEMENTARIA</button>
+            <div class="dropdown-content">
+                <a href="#">Rutina Complementaria 1</a>
+                <a href="#">Rutina Complementaria 2</a>
+                <a href="#">Rutina Complementaria 3</a>
+                <a href="#">Rutina Complementaria 4</a>
+            </div>
+        </div>
+
+        <div id="mensaje_estimacion" style="display:none;"></div>
+
+        <div id="graph" style="display:none;"></div>
+        <button id="toggle-graph-button" onclick="toggleGraph()">Abrir Gráfica</button>
+
+        <div class="table-container" id="tabla-plan" style="display:none;"></div>
+
+        <button id="downloadBtn" style="display:none;">Descargar PDF</button>
+    </div>
+
+    <script>
+        function toggleGraph() {
+            const graphDiv = document.getElementById("graph");
+            const button = document.getElementById("toggle-graph-button");
+
+            if (graphDiv.style.display === "none") {
+                graphDiv.style.display = "block";
+                button.innerText = "Cerrar Gráfica";
+            } else {
+                graphDiv.style.display = "none";
+                button.innerText = "Abrir Gráfica";
+            }
+        }
+
+        document.getElementById("form-entrenamiento").onsubmit = function(event) {
+            event.preventDefault();
+
+            const pesoDeseado = parseFloat(document.getElementById("peso_deseado").value);
+            const repeticionMaxima = parseFloat(document.getElementById("repeticion_maxima").value);
+            const diasEntrenamiento = parseInt(document.getElementById("dias_entrenamiento").value);
+            const meses = parseInt(document.getElementById("meses").value);
+            const ejercicio = document.getElementById("ejercicio").value;
+
+            // Lógica para entrenamientos y descanso
+            let diasDescanso;
+            switch(diasEntrenamiento) {
+                case 1: diasDescanso = 6; break;
+                case 2: diasDescanso = 5; break;
+                case 3: diasDescanso = 4; break;
+                case 4: diasDescanso = 3; break;
+                case 5: diasDescanso = 2; break;
+                case 6: diasDescanso = 1; break;
+                case 0: diasDescanso = 7; break;
+                default: diasDescanso = 7; break;
+            }
+
+            fetch("/plan_entrenamiento", {
+                method: 'POST',
+                body: new FormData(document.getElementById("form-entrenamiento"))
+            })
+            .then(response => response.json())
+            .then(data => {
+                const plan = data.plan;
+                const mensajeEstimacion = data.mensaje_estimacion;
+                const graphHtml = data.graph;
+
+                const mensajeDiv = document.getElementById("mensaje_estimacion");
+                mensajeDiv.style.display = "block";
+                mensajeDiv.innerHTML = mensajeEstimacion;
+
+                const tablaPlanDiv = document.getElementById("tabla-plan");
+                tablaPlanDiv.style.display = "block";
+                let tablaHTML = "<table><tr><th>Mes</th><th>Semana</th><th>Día</th><th>Ejercicio</th><th>Peso (kg)</th><th>Estado</th></tr>";
+
+                // Inicializando variables
+                let diaContador = 1;
+                let mesContador = 1;
+                let semanaContador = 1;
+                let cicloEntrenamiento = 1;
+                let pesoActual = repeticionMaxima * 0.5; // Inicia con el 50% del máximo
+
+                // Agregar MES en la tabla
+                for (let mes = 1; mes <= meses; mes++) {
+                    tablaHTML += `<tr><td colspan="6" style="font-weight: bold;">MES ${mes}</td></tr>`;
+
+                    for (let dia = 1; dia <= 28; dia++) {
+                        let estado = (cicloEntrenamiento <= diasEntrenamiento) ? "Entrenamiento" : "Descanso";
+
+                        if (estado === "Entrenamiento") {
+                            tablaHTML += `<tr><td>${mesContador}</td><td>${semanaContador}</td><td>${diaContador}</td><td>${ejercicio}</td><td>${pesoActual.toFixed(2)}</td><td>${estado}</td></tr>`;
+                            pesoActual += 2.5; // Incremento de 2.5 kg por entrenamiento
+                        } else {
+                            tablaHTML += `<tr><td>${mesContador}</td><td>${semanaContador}</td><td>${diaContador}</td><td>Descanso</td><td>-</td><td>${estado}</td></tr>`;
+                        }
+
+                        diaContador++;
+
+                        // Cambiar de semana y mes
+                        if (diaContador > 7) {
+                            diaContador = 1;
+                            semanaContador++;
+                        }
+                        if (semanaContador > 4) {
+                            semanaContador = 1;
+                            mesContador++;
+                        }
+
+                        cicloEntrenamiento++;
+                        if (cicloEntrenamiento > 7) {
+                            cicloEntrenamiento = 1;
+                        }
+                    }
+                }
+
+                tablaHTML += "</table>";
+                tablaPlanDiv.innerHTML = tablaHTML;
+
+                const graphDiv = document.getElementById("graph");
+                graphDiv.innerHTML = graphHtml;
+
+                const downloadBtn = document.getElementById("downloadBtn");
+                downloadBtn.style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const table = document.querySelector('#tabla-plan table');
+            doc.autoTable({ html: table });
+            doc.save('plan_entrenamiento.pdf');
+        });
+
+        function generarUsuario() {
+            const nombre = document.getElementById('nombre').value;
+            const apellidos = document.getElementById('apellidos').value;
+
+            if (nombre && apellidos) {
+                const usuario = `${nombre.toLowerCase()}${apellidos.toLowerCase().split(' ')[0]}`;
+                document.getElementById('usuario').value = usuario;
+            } else {
+                alert('Por favor ingresa tu nombre y apellidos primero.');
+            }
+        }
+
+        function generarContraseña() {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+            let contraseña = '';
+            const longitud = 12;
+
+            for (let i = 0; i < longitud; i++) {
+                const aleatorio = Math.floor(Math.random() * caracteres.length);
+                contraseña += caracteres.charAt(aleatorio);
+            }
+
+            document.getElementById('contraseña').value = contraseña;
+        }
+    </script>
+</body>
+</html>

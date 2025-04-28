@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Rutinas Complementarias{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Rutinas Complementarias</h1>
+    
+    <div class="row">
+        {% for rutina in rutinas %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="{{ rutina.icono }} fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="card-title text-center">{{ rutina.nombre }}</h3>
+                    <p class="card-text">{{ rutina.descripcion }}</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{{ url_for('rutina_especifica', tipo=rutina.id) }}" class="btn btn-primary">
+                        Ver Rutina
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.card {
+    border: 1px solid rgba(255, 77, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 77, 0, 0.3);
+}
+
+.text-primary {
+    color: #ff4d00 !important;
+}
+
+.btn-primary {
+    background-color: #ff4d00;
+    border-color: #ff4d00;
+}
+
+.btn-primary:hover {
+    background-color: #ff6b2b;
+    border-color: #ff6b2b;
+}
+
+.card-title {
+    color: #ff4d00;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+</style>
+{% endblock %} 

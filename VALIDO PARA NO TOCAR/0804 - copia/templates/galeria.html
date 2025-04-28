@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="galeria-container">
+    <h1>Galería de Progreso</h1>
+    
+    <div class="galeria-upload">
+        <h2>Subir Nueva Foto</h2>
+        <form id="upload-form" class="upload-form">
+            <div class="form-group">
+                <label for="foto">Seleccionar Foto:</label>
+                <input type="file" id="foto" name="foto" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoría:</label>
+                <select id="categoria" name="categoria">
+                    <option value="">Sin categoría</option>
+                    <option value="antes">Antes</option>
+                    <option value="despues">Después</option>
+                    <option value="progreso">Progreso</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Subir Foto</button>
+        </form>
+    </div>
+    
+    <div class="galeria-filtros">
+        <h2>Filtrar por Categoría</h2>
+        <div class="filtros-buttons">
+            <button class="filtro-btn active" data-categoria="">Todas</button>
+            {% for categoria in categorias %}
+            <button class="filtro-btn" data-categoria="{{ categoria }}">{{ categoria|title }}</button>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="galeria-grid">
+        {% for foto in fotos %}
+        <div class="foto-card" data-categoria="{{ foto.categoria or '' }}">
+            <img src="{{ url_for('static', filename='uploads/' + foto.ruta) }}" alt="Foto de progreso">
+            <div class="foto-info">
+                <p class="foto-fecha">{{ foto.fecha.strftime('%Y-%m-%d') }}</p>
+                {% if foto.categoria %}
+                <p class="foto-categoria">{{ foto.categoria|title }}</p>
+                {% endif %}
+            </div>
+            <button class="btn-delete" data-foto-id="{{ foto.id }}">Eliminar</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.galeria-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.galeria-upload {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 40px;
+}
+
+.upload-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 20px;
+    align-items: end;
+}
+
+.galeria-filtros {
+    margin-bottom: 40px;
+}
+
+.filtros-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filtro-btn.active {
+    background: #ff4d00;
+    border-color: #ff4d00;
+}
+
+.filtro-btn:hover {
+    background: rgba(255, 77, 0, 0.2);
+}
+
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.foto-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.foto-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.foto-info {
+    padding: 10px;
+}
+
+.foto-fecha {
+    color: #ff4d00;
+    font-weight: bold;
+    margin: 0;
+}
+
+.foto-categoria {
+    color: #ff8533;
+    margin: 5px 0 0 0;
+}
+
+.btn-delete {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: rgba(255, 0, 0, 1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.btn-primary {
+    background: #ff4d00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    height: fit-content;
+}
+
+.btn-primary:hover {
+    background: #ff8533;
+}
+</style>
+
+<script>
+document.getElementById('upload-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    
+    try {
+        const response = await fetch('/subir_foto', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Foto subida correctamente');
+            location.reload();
+        } else {
+            alert(result.error || 'Error al subir la foto');
+        }
+    } catch (error) {
+        alert('Error al subir la foto');
+        console.error(error);
+    }
+});
+
+document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
+            try {
+                const response = await fetch(`/eliminar_foto/${btn.dataset.fotoId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    btn.closest('.foto-card').remove();
+                } else {
+                    alert(result.error || 'Error al eliminar la foto');
+                }
+            } catch (error) {
+                alert('Error al eliminar la foto');
+                console.error(error);
+            }
+        }
+    });
+});
+
+document.querySelectorAll('.filtro-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Actualizar botones activos
+        document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Filtrar fotos
+        const categoria = btn.dataset.categoria;
+        document.querySelectorAll('.foto-card').forEach(card => {
+            if (!categoria || card.dataset.categoria === categoria) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

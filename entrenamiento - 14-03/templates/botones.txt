@@ -1,0 +1,567 @@
+<!-- Botón "PONTE A PRUEBA" con estilo destacado -->
+<div class="dropdown">
+    <button class="btn-ponte-a-prueba">PONTE A PRUEBA</button>
+    <div class="dropdown-content">
+        <!-- Subgrupo de retos de Dominadas -->
+        <a href="javascript:void(0);" onclick="openPopup('retos/dominadas.html')">Retos de Dominadas</a>
+
+        <!-- Subgrupo de retos de Flexiones -->
+        <a href="javascript:void(0);" onclick="openPopup('retos/flexiones.html')">Retos de Flexiones</a>
+
+        <!-- Subgrupo de retos de Correr -->
+        <a href="javascript:void(0);" onclick="openPopup('retos/correr.html')">Retos de Correr</a>
+    </div>
+</div>
+
+<!-- Función JavaScript para abrir el popup -->
+<script>
+    function openPopup(url) {
+        // Abrir la ventana emergente
+        window.open(url, '_blank', 'width=800,height=600,scrollbars=yes');
+    }
+</script>
+
+
+<!-- Estilos CSS para el menú desplegable de 3 niveles -->
+<style>
+    /* Estilo general para el menú desplegable */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilo para los submenús */
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu .dropdown-content-sub {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown-submenu:hover .dropdown-content-sub {
+        display: block;
+    }
+
+    .dropdown-content-sub a {
+        padding: 12px 16px;
+    }
+---------------------------------------------------------------------------
+ <!-- Botón desplegable para añadir rutina complementaria -->
+        
+        
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Programa de Entrenamiento</title>
+            <link rel="stylesheet" href="styles.css">
+            <style>
+                .dropdown {
+                    position: relative;
+                    display: inline-block;
+                }
+                .dropdown-content {
+                    display: none;
+                    position: absolute;
+                    background-color: #f9f9f9;
+                    min-width: 160px;
+                    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                    z-index: 1;
+                }
+                .dropdown-content a {
+                    color: black;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    display: block;
+                }
+                .dropdown-content a:hover {
+                    background-color: #f1f1f1;
+                }
+                .dropdown:hover .dropdown-content {
+                    display: block;
+                }
+            </style>
+            <script>
+                function loadIframe(url) {
+                    document.getElementById('contentFrame').src = url;
+                }
+            </script>
+        
+        
+            <h1>Programa de Entrenamiento</h1>
+            <!-- Botón desplegable para añadir rutina complementaria -->
+            <div class="dropdown">
+                <button>RUTINA COMPLEMENTARIA</button>
+                <div class="dropdown-content">
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/hipertrofia.html')">Hipertrofia: Aumentar la masa muscular, alto volumen, repeticiones de 6-12.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/fuerza.html')">Fuerza: Maximizar la fuerza, baja cantidad de repeticiones (1-5), alta carga.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/weider.html')">Weider: Culturismo clásico, cada grupo muscular entrenado una vez por semana.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/arnold.html')">Arnold: Rutina avanzada, entrenamientos dobles y alta frecuencia para los grupos musculares.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/fullbody.html')">Full Body: Entrenamiento total del cuerpo en cada sesión, ideal para principiantes.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/ppl.html')">Push-Pull-Legs (PPL): Dividir los entrenamientos por tipo de movimiento, adaptable a 3-6 días.</a>
+                    <a href="javascript:void(0);" onclick="loadIframe('runitas/circuito.html')">Circuito: Mejora cardiovascular y tonificación muscular.</a>
+                </div>
+            </div>
+        
+            <div id="mensaje_estimacion" style="display:none;"></div>
+            
+            <!-- esto hace que desaparezca un cuadro debajo de el mensaje de la rutina-->
+            <iframe id="contentFrame" width="100%" height="600px"></iframe>
+    
+        
+        
+
+        <!-- Añadir sección de Rutinas sin Peso -->
+         
+<div class="dropdown">
+    <button>RUTINA SIN PESO</button>
+    <div class="dropdown-content">
+        <a href="javascript:void(0);" onclick="openPopup('runitas/abs.html')">Abdomen: Ejercicios sin peso para tonificar el abdomen.</a>
+        <a href="javascript:void(0);" onclick="openPopup('runitas/cardio.html')">Cardio: Ejercicios sin peso para mejorar la resistencia cardiovascular.</a>
+        <a href="javascript:void(0);" onclick="openPopup('runitas/pilates.html')">Pilates: Rutina sin peso que mejora la flexibilidad y el control corporal.</a>
+        <a href="javascript:void(0);" onclick="openPopup('runitas/yoga.html')">Yoga: Ejercicios de bajo impacto, ideal para flexibilidad y relajación.</a>
+        <a href="javascript:void(0);" onclick="openPopup('runitas/zumba.html')">Zumba: Rutina de baile cardiovascular sin peso, divertida y energética.</a>
+        <a href="javascript:void(0);" onclick="openPopup('runitas/stretching.html')">Stretching: Ejercicios para estiramientos y mejorar la flexibilidad sin peso.</a>
+    </div>
+</div>
+
+<!-- Añadir botón "CROSS-FIT" con menú desplegable de WODs -->
+<div class="dropdown">
+    <button>CROSS-FIT</button>
+    <div class="dropdown-content">
+        <!-- Grupo Girl WODs (Benchmark WODs) -->
+        <div class="dropdown-submenu">
+            <a href="javascript:void(0);">Girl WODs (Benchmark WODs)</a>
+            <div class="dropdown-content-sub">
+                <a href="javascript:void(0);" onclick="openPopup('wods/girl_wods/fran.html')">Fran</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/girl_wods/cindy.html')">Cindy</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/girl_wods/angie.html')">Angie</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/girl_wods/helen.html')">Helen</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/girl_wods/nancy.html')">Nancy</a>
+            </div>
+        </div>
+        
+        <!-- Grupo Hero WODs -->
+        <div class="dropdown-submenu">
+            <a href="javascript:void(0);">Hero WODs</a>
+            <div class="dropdown-content-sub">
+                <a href="javascript:void(0);" onclick="openPopup('wods/hero_wods/murph.html')">Murph</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/hero_wods/the_seven.html')">The Seven</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/hero_wods/nick.html')">Nick</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/hero_wods/zeus.html')">Zeus</a>
+            </div>
+        </div>
+
+        <!-- Grupo Otros WODs Populares -->
+        <div class="dropdown-submenu">
+            <a href="javascript:void(0);">Otros WODs Populares</a>
+            <div class="dropdown-content-sub">
+                <a href="javascript:void(0);" onclick="openPopup('wods/otros_wods/filthy_fifty.html')">Filthy Fifty</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/otros_wods/kettlehell.html')">Kettlehell</a>
+                <a href="javascript:void(0);" onclick="openPopup('wods/otros_wods/the_longest_mile.html')">The Longest Mile</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Añadir botón CALISTENIA con subgrupos -->
+<div class="dropdown">
+    <button>CALISTENIA</button>
+    <div class="dropdown-content">
+        <!-- Subgrupo Básica para Principiantes -->
+        <a href="javascript:void(0);" onclick="openPopup('calistenia/basica_principiantes.html')">Básica para Principiantes</a>
+        
+        <!-- Subgrupo Intermedia -->
+        <a href="javascript:void(0);" onclick="openPopup('calistenia/intermedia.html')">Intermedia</a>
+        
+        <!-- Subgrupo Avanzada -->
+        <a href="javascript:void(0);" onclick="openPopup('calistenia/avanzada.html')">Avanzada</a>
+        
+        <!-- Subgrupo Full Body -->
+        <a href="javascript:void(0);" onclick="openPopup('calistenia/full_body.html')">Full Body</a>
+        
+        <!-- Subgrupo Circuito HIIT -->
+        <a href="javascript:void(0);" onclick="openPopup('calistenia/circuito_hiit.html')">Circuito HIIT</a>
+    </div>
+</div>
+
+<!-- Estilos CSS para el menú desplegable -->
+<style>
+    /* Estilo general para el menú desplegable */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+</style>
+
+<!-- Función JavaScript para abrir el popup -->
+<script>
+    function openPopup(url) {
+        // Abrir la ventana emergente
+        window.open(url, '_blank', 'width=800,height=600,scrollbars=yes');
+    }
+</script>
+
+<!-- Estilos CSS para el menú desplegable y los botones con estilo más duro -->
+<style>
+    /* Estilo general para el menú desplegable */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #333;  /* Color oscuro para el fondo */
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.8);  /* Sombra más marcada */
+        z-index: 1;
+        border-radius: 5px;
+        border: 2px solid #444; /* Borde oscuro */
+    }
+
+    .dropdown-content a {
+        color: #fff;  /* Texto blanco */
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #444;  /* Fondo más oscuro al pasar el ratón */
+        color: #f9f9f9;  /* Texto claro al pasar el ratón */
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilo para el botón "PONTE A PRUEBA" */
+    .btn-ponte-a-prueba {
+        background-color: #ff5733;  /* Naranja intenso */
+        color: white;
+        padding: 15px 30px;
+        font-size: 18px;
+        border: 2px solid #ff5733; /* Borde del mismo color */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s ease;
+        font-weight: bold;
+    }
+
+    .btn-ponte-a-prueba:hover {
+        background-color: #fff;
+        color: #ff5733;  /* Rojo Naranja para texto */
+        border: 2px solid #ff5733;
+        transform: scale(1.05);  /* Efecto de aumento en el tamaño */
+    }
+
+    /* Estilo de los botones principales */
+    .dropdown button {
+        background-color: #222;  /* Fondo oscuro */
+        color: #fff;  /* Texto blanco */
+        padding: 15px 25px;
+        font-size: 16px;
+        border: 2px solid #444;
+        border-radius: 5px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.3s ease;
+    }
+
+    .dropdown button:hover {
+        background-color: #444;  /* Fondo más oscuro al pasar el ratón */
+        transform: scale(1.05);  /* Efecto de aumento al pasar el ratón */
+    }
+
+    /* Estilo para los submenús */
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu .dropdown-content-sub {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background-color: #333;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.8);
+        border-radius: 5px;
+        border: 2px solid #444;
+    }
+
+    .dropdown-submenu:hover .dropdown-content-sub {
+        display: block;
+    }
+
+    .dropdown-content-sub a {
+        color: #fff;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .dropdown-content-sub a:hover {
+        background-color: #444;
+        color: #f9f9f9;
+    }
+</style>
+
+<!-- Botón "HALTEROFILIA" con subgrupos -->
+<div class="dropdown">
+    <button>HALTEROFILIA</button>
+    <div class="dropdown-content">
+        <!-- Subgrupo Principiante -->
+        <a href="javascript:void(0);" onclick="openPopup('HALTEROFILIA/principiante.html')">Principiante</a>
+
+        <!-- Subgrupo Intermedio -->
+        <a href="javascript:void(0);" onclick="openPopup('HALTEROFILIA/intermedio.html')">Intermedio</a>
+
+        <!-- Subgrupo Avanzado -->
+        <a href="javascript:void(0);" onclick="openPopup('HALTEROFILIA/avanzado.html')">Avanzado</a>
+    </div>
+</div>
+
+<!-- Estilos CSS para el menú desplegable -->
+<style>
+    /* Estilo general para el menú desplegable */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+</style>
+
+<!-- Función JavaScript para abrir el popup -->
+<script>
+    function openPopup(url) {
+        // Abrir la ventana emergente
+        window.open(url, '_blank', 'width=800,height=600,scrollbars=yes');
+    }
+</script>
+
+
+<!-- Añadir botón "SALIR A CORRER" con menú desplegable de 3 niveles -->
+<div class="dropdown">
+    <button>SALIR A CORRER</button>
+    <div class="dropdown-content">
+        <div class="dropdown-submenu">
+            <a href="javascript:void(0);">Principiante</a>
+            <div class="dropdown-content-sub">
+                <a href="javascript:void(0);" onclick="openPopup('runitas/correr_principiante.html')">Plan para Principiantes</a>
+                <a href="javascript:void(0);" onclick="openPopup('runitas/correr_principiante_ejercicios.html')">Ejercicios para Principiantes</a>
+            </div>
+        </div>
+        <div class="dropdown-submenu">
+            <a href="javascript:void(0);">Medio</a>
+            <div class="dropdown-content-sub">
+                <a href="javascript:void(0);" onclick="openPopup('runitas/correr_medio.html')">Plan para Nivel Medio</a>
+                <a href="javascript:void(0);" onclick="openPopup('runitas/correr_medio_ejercicios.html')">Ejercicios para Nivel Medio</a>
+            </div>
+        </div>
+        <div class="dropdown-submenu">
+            <a href="javascript:void(0);">Avanzado</a>
+            <div class="dropdown-content-sub">
+                <a href="javascript:void(0);" onclick="openPopup('runitas/correr_avanzado.html')">Plan para Nivel Avanzado</a>
+                <a href="javascript:void(0);" onclick="openPopup('runitas/correr_avanzado_ejercicios.html')">Ejercicios para Nivel Avanzado</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Estilos CSS para el menú desplegable y los botones con estilo más duro y el botón "PONTE A PRUEBA" destacado -->
+<style>
+    /* Estilo general para el menú desplegable */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #333;  /* Fondo oscuro para los menús */
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.8);  /* Sombra más marcada */
+        z-index: 1;
+        border-radius: 5px;
+        border: 2px solid #444; /* Borde oscuro */
+    }
+
+    .dropdown-content a {
+        color: #fff;  /* Texto blanco */
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #444;  /* Fondo más oscuro al pasar el ratón */
+        color: #f9f9f9;  /* Texto claro al pasar el ratón */
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilo para los botones principales */
+    .dropdown button {
+        background-color: #222;  /* Fondo oscuro */
+        color: #fff;  /* Texto blanco */
+        padding: 15px 25px;
+        font-size: 16px;
+        border: 2px solid #444;
+        border-radius: 5px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.3s ease;
+    }
+
+    .dropdown button:hover {
+        background-color: #444;  /* Fondo más oscuro al pasar el ratón */
+        transform: scale(1.05);  /* Efecto de aumento al pasar el ratón */
+    }
+
+    /* Estilo para el botón "PONTE A PRUEBA" destacado */
+    .btn-ponte-a-prueba {
+        background-color: #ff1a1a;  /* Rojo intenso */
+        color: white;
+        padding: 20px 40px;
+        font-size: 20px;
+        border: 3px solid #e60000; /* Borde más grueso y rojo oscuro */
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s ease, box-shadow 0.3s;
+        font-weight: bold;
+        margin-top: 30px;  /* Separa el botón del resto */
+        display: block;  /* Asegura que se muestre de forma independiente */
+        width: 100%;  /* Ocupa todo el ancho disponible */
+        text-align: center;  /* Centrado de texto */
+        letter-spacing: 2px;  /* Espaciado entre letras para mayor impacto */
+    }
+
+    .btn-ponte-a-prueba:hover {
+        background-color: #ff3333;  /* Rojo más claro al pasar el ratón */
+        border: 3px solid #cc0000; /* Borde rojo más oscuro */
+        transform: scale(1.1);  /* Efecto de aumento al pasar el ratón */
+        box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.7); /* Sombra roja para un efecto de resplandor */
+    }
+
+    /* Estilo de los submenús */
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu .dropdown-content-sub {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background-color: #333;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.8);
+        border-radius: 5px;
+        border: 2px solid #444;
+    }
+
+    .dropdown-submenu:hover .dropdown-content-sub {
+        display: block;
+    }
+
+    .dropdown-content-sub a {
+        color: #fff;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .dropdown-content-sub a:hover {
+        background-color: #444;
+        color: #f9f9f9;
+    }
+</style>
+
+
+

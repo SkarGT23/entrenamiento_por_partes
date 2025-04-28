@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutina Push-Pull-Legs (PPL)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Agregar Font Awesome -->
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #8edfb1, #000000); /* Fondo marino con tonos verde mar y azul */
+            color: #fff; /* Texto blanco para alto contraste */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        /* Main container for content */
+        section {
+            width: 80%;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.1); /* Fondo traslúcido blanco para destacar el contenido */
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4); /* Sombra sutil para dar profundidad */
+        }
+
+        /* Title styling */
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            color: #000000; /* Azul marino brillante para el título */
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra ligera para dar profundidad */
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            color: #ffffff; /* Color blanco para subtítulos */
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Efecto de sombra */
+        }
+
+        /* Fondo diferenciado para cada día */
+        section h3:nth-of-type(1) {
+            background-color: #4caf50; /* Verde para el día Push */
+        }
+
+        section h3:nth-of-type(2) {
+            background-color: #2196f3; /* Azul para el día Pull */
+        }
+
+        section h3:nth-of-type(3) {
+            background-color: #ff9800; /* Naranja para el día Legs */
+        }
+
+        /* List styling */
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+            color: #c91b1be9; /* Color blanco suave para los elementos de lista */
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 8px 0;
+        }
+
+        li:hover {
+            background-color: #b7eee8; /* Cambiar a un verde claro cuando se pase el mouse */
+            transform: scale(1.05); /* Hacer un pequeño zoom para resaltar el item */
+            transition: 0.3s ease;
+        }
+
+        li::before {
+            content: "\2022"; /* Bullet point */
+            font-size: 1.5rem;
+            color: #b7eee8; /* Verde agua para el punto */
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* Íconos de Font Awesome */
+        li i {
+            margin-right: 10px;
+            color: #ffffff; /* Blanco para los íconos */
+        }
+
+        /* Strong emphasis */
+        strong {
+            color: #646b6c77; /* Azul claro para resaltar los elementos importantes */
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Additional section styles */
+        section p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            section {
+                width: 90%;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            h3 {
+                font-size: 1.5rem;
+            }
+
+            li {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h2>6. Rutina Push-Pull-Legs (PPL)</h2>
+        <p><strong>Objetivo:</strong> Dividir los entrenamientos en empuje (push), tirón (pull) y piernas (legs).</p>
+
+        <h3>Día 1: Push (Empuje - Pecho, Hombros y Tríceps)</h3>
+        <ul>
+            <li><i class="fas fa-dumbbell"></i>Press de banca plano: 4x8-12</li>
+            <li><i class="fas fa-cogs"></i>Press militar: 4x8-10</li>
+            <li><i class="fas fa-arrow-circle-right"></i>Elevaciones laterales: 4x10-12</li>
+            <li><i class="fas fa-hand-paper"></i>Fondos (Dips): 3x8-10</li>
+            <li><i class="fas fa-chalkboard-teacher"></i>Extensiones de tríceps en cuerda: 4x10-12</li>
+        </ul>
+
+        <h3>Día 2: Pull (Tirón - Espalda y Bíceps)</h3>
+        <ul>
+            <li><i class="fas fa-arrow-up"></i>Pull-up: 4x6-8</li>
+            <li><i class="fas fa-hand-rock"></i>Remo con barra: 4x8-10</li>
+            <li><i class="fas fa-long-arrow-alt-down"></i>Jalón al pecho: 4x8-10</li>
+            <li><i class="fas fa-cogs"></i>Curl con barra: 4x8-12</li>
+        </ul>
+
+        <h3>Día 3: Legs (Piernas)</h3>
+        <ul>
+            <li><i class="fas fa-chair"></i>Sentadilla: 4x8-12</li>
+            <li><i class="fas fa-cogs"></i>Prensa de pierna: 4x10-12</li>
+            <li><i class="fas fa-arrow-circle-down"></i>Curl femoral: 3x10-12</li>
+            <li><i class="fas fa-arrow-up"></i>Elevaciones de talones (gemelos): 4x12-15</li>
+        </ul>
+    </section>
+</body>
+</html>
+

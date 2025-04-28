@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso con o sin Registro</title>
+
+    <style>
+        /* Reseteo de estilos básicos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos generales */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #1e3d59, #006a8e); /* Azul mar y turquesa */
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        /* Contenedor principal del formulario */
+        #formulario {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px 40px;
+            border-radius: 15px;
+            border: 2px solid #ff7f00; /* Fuego */
+            box-shadow: 0 0 15px rgba(255, 127, 0, 0.6); /* Efecto de fuego */
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* Títulos */
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ff7f00; /* Fuego */
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+        }
+
+        h3 {
+            font-size: 1.5em;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        /* Formulario de entrada */
+        input[type="text"], button {
+            background: #0a1f30; /* Azul muy oscuro, casi piedra */
+            color: #fff;
+            padding: 12px;
+            border: 2px solid #ff7f00; /* Fuego */
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 1.2em;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(255, 127, 0, 0.8);
+        }
+
+        /* Estilo de los inputs */
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00bfae; /* Turquesa */
+            box-shadow: 0 0 5px #00bfae;
+        }
+
+        /* Botones */
+        button {
+            background: linear-gradient(45deg, #ff7f00, #b53d00); /* De fuego a naranja oscuro */
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #b53d00, #ff7f00); /* Efecto hover con transición de color */
+            transform: translateY(-5px); /* Efecto de elevación */
+            box-shadow: 0 5px 15px rgba(255, 127, 0, 0.7); /* Resplandor de fuego */
+        }
+
+        button:active {
+            transform: translateY(2px); /* Efecto de presión al hacer clic */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button:focus {
+            outline: none;
+            border-color: #00bfae; /* Turquesa */
+        }
+
+        /* Estilos para el contenedor del formulario */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Mensajes de error */
+        .error {
+            color: #ff3333;
+            font-size: 1.2em;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Bienvenido</h2>
+
+    <!-- Formulario de registro -->
+    <div id="formulario">
+        <h3>Formulario de Registro</h3>
+        <form method="POST" action="/">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required><br>
+
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" id="apellidos" name="apellidos" required><br>
+
+            <button type="submit">Acceder con Registro</button>
+        </form>
+
+        <!-- Mostrar mensaje de error si es necesario -->
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>

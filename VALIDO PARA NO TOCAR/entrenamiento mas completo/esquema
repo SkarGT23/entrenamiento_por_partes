@@ -1,0 +1,11 @@
+/tu_proyecto
+  /static
+    /css
+      styles.css
+  /templates
+    index.html
+  app.py
+
+app.py: El archivo principal de Python donde corre el servidor y se gestionan las rutas.
+/templates/index.html: La interfaz web.
+/static/css/styles.css: Los estilos para la interfaz web.

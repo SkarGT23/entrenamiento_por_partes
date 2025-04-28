@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h2 class="text-center mb-0">{{ titulo }}</h2>
+                </div>
+                <div class="card-body rutina-content">
+                    {{ contenido | safe }}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{{ url_for('rutinas') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Volver a Rutinas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rutina-content {
+    padding: 20px;
+}
+
+.rutina-content h3 {
+    color: #ff4d00;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.rutina-content ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.rutina-content li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+    color: #cccccc;
+}
+
+.rutina-content li:before {
+    content: "•";
+    color: #ff4d00;
+    position: absolute;
+    left: 0;
+}
+
+.rutina-content p {
+    color: #cccccc;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.btn-primary {
+    background-color: #ff4d00;
+    border-color: #ff4d00;
+}
+
+.btn-primary:hover {
+    background-color: #ff6b2b;
+    border-color: #ff6b2b;
+}
+</style>
+{% endblock %} 

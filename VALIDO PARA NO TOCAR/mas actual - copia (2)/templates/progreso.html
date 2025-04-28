@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Progreso{% endblock %}
+
+{% block content %}
+<div class="progreso-container">
+    <div class="progreso-header">
+        <h1>Mi Progreso</h1>
+        <div class="filtros">
+            <select id="filtro-tipo" class="filtro-select">
+                <option value="todos">Todos los ejercicios</option>
+                <option value="compound">Ejercicios Compuestos</option>
+                <option value="isolation">Ejercicios de Aislamiento</option>
+                <option value="bodyweight">Peso Corporal</option>
+            </select>
+            <select id="filtro-musculo" class="filtro-select">
+                <option value="todos">Todos los músculos</option>
+                <option value="piernas">Piernas</option>
+                <option value="pecho">Pecho</option>
+                <option value="espalda">Espalda</option>
+                <option value="hombros">Hombros</option>
+                <option value="biceps">Bíceps</option>
+                <option value="triceps">Tríceps</option>
+                <option value="core">Core</option>
+            </select>
+            <input type="text" id="buscar-ejercicio" placeholder="Buscar ejercicio..." class="filtro-busqueda">
+        </div>
+    </div>
+    
+    <div class="progreso-grid">
+        {% for exercise in exercises %}
+        <div class="progreso-card" data-tipo="{{ exercise.exercise_type }}" data-musculo="{{ exercise.target_muscle }}">
+            <div class="card-header">
+                <h3>{{ exercise.name }}</h3>
+                <span class="tipo-badge {{ exercise.exercise_type }}">{{ exercise.exercise_type }}</span>
+            </div>
+            <div class="progreso-info">
+                <div class="info-item">
+                    <i class="fas fa-dumbbell"></i>
+                    <div class="info-content">
+                        <span class="info-label">Peso actual</span>
+                        <span class="info-value">{{ exercise.weight }} kg</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-arrow-up"></i>
+                    <div class="info-content">
+                        <span class="info-label">Incremento</span>
+                        <span class="info-value">{{ exercise.increment }} kg</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-redo"></i>
+                    <div class="info-content">
+                        <span class="info-label">Reps máx</span>
+                        <span class="info-value">{{ exercise.max_reps }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <a href="{{ url_for('progreso_ejercicio', exercise_id=loop.index0) }}" class="btn btn-primary">
+                    <i class="fas fa-chart-line"></i> Ver Detalles
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.progreso-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.progreso-header {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.filtros {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filtro-select, .filtro-busqueda {
+    padding: 8px 15px;
+    border: 1px solid rgba(255, 77, 0, 0.3);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.filtro-busqueda {
+    min-width: 200px;
+}
+
+.progreso-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.progreso-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 77, 0, 0.1);
+}
+
+.progreso-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 77, 0, 0.2);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: #ff4d00;
+    font-size: 1.2em;
+}
+
+.tipo-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+.tipo-badge.compound {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
+.tipo-badge.isolation {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+}
+
+.tipo-badge.bodyweight {
+    background: rgba(0, 191, 255, 0.2);
+    color: #00bfff;
+}
+
+.progreso-info {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-item i {
+    color: #ff4d00;
+    font-size: 1.2em;
+    width: 20px;
+    text-align: center;
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.info-value {
+    font-size: 1.1em;
+    color: white;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-primary {
+    background: #ff4d00;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #ff8533;
+}
+
+@media (max-width: 768px) {
+    .progreso-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filtros {
+        flex-direction: column;
+    }
+    
+    .filtro-select, .filtro-busqueda {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.progreso-card');
+    const filtroTipo = document.getElementById('filtro-tipo');
+    const filtroMusculo = document.getElementById('filtro-musculo');
+    const busqueda = document.getElementById('buscar-ejercicio');
+    
+    function filtrarEjercicios() {
+        const tipoSeleccionado = filtroTipo.value;
+        const musculoSeleccionado = filtroMusculo.value;
+        const textoBusqueda = busqueda.value.toLowerCase();
+        
+        cards.forEach(card => {
+            const tipo = card.dataset.tipo;
+            const musculo = card.dataset.musculo;
+            const nombre = card.querySelector('h3').textContent.toLowerCase();
+            
+            const cumpleTipo = tipoSeleccionado === 'todos' || tipo === tipoSeleccionado;
+            const cumpleMusculo = musculoSeleccionado === 'todos' || musculo === musculoSeleccionado;
+            const cumpleBusqueda = nombre.includes(textoBusqueda);
+            
+            if (cumpleTipo && cumpleMusculo && cumpleBusqueda) {
+                card.style.display = '';
+                card.style.opacity = '1';
+            } else {
+                card.style.display = 'none';
+                card.style.opacity = '0';
+            }
+        });
+    }
+    
+    filtroTipo.addEventListener('change', filtrarEjercicios);
+    filtroMusculo.addEventListener('change', filtrarEjercicios);
+    busqueda.addEventListener('input', filtrarEjercicios);
+});
+</script>
+{% endblock %} 

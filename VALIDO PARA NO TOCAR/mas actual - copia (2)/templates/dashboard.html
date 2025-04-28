@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Plan de Entrenamiento</title>
+    <style>
+        :root {
+            --color-fuego: #ff4d00;
+            --color-fuego-claro: #ff8533;
+            --color-metal: #1a1a1a;
+            --color-metal-claro: #2d2d2d;
+            --color-acero: #4a4a4a;
+            --color-texto: #ffffff;
+            --color-texto-secundario: #cccccc;
+        }
+
+        body {
+            background-color: var(--color-metal);
+            color: var(--color-texto);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(45deg, var(--color-metal), var(--color-acero));
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 77, 0, 0.2);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: var(--color-texto);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-link {
+            color: var(--color-texto);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--color-fuego);
+            color: var(--color-texto);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-section {
+            background: linear-gradient(145deg, var(--color-metal-claro), var(--color-acero));
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--color-fuego);
+        }
+
+        .welcome-section h2 {
+            color: var(--color-fuego);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-section p {
+            color: var(--color-texto-secundario);
+            font-size: 1.1rem;
+        }
+
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .flash-message {
+            background-color: rgba(255, 77, 0, 0.1);
+            color: var(--color-fuego);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--color-fuego);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="navbar-brand">Plan de Entrenamiento</a>
+            <a href="{{ url_for('logout') }}" class="nav-link">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="welcome-section">
+            <h2>Bienvenido, {{ nombre }} {{ apellidos }}</h2>
+            <p>Aquí podrás gestionar tu plan de entrenamiento personalizado.</p>
+        </div>
+    </div>
+</body>
+</html> 

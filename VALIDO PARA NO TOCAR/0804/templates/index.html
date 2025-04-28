@@ -1,0 +1,647 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Sistema de Entrenamiento{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="content-wrapper">
+        <h1>Bienvenido a tu Sistema de Entrenamiento</h1>
+        
+        <div class="dashboard-grid">
+            <!-- Resumen de Progreso -->
+            <div class="dashboard-card">
+                <h2>Resumen de Progreso</h2>
+                <div class="progreso-resumen">
+                    <div class="progreso-item">
+                        <i class="fas fa-dumbbell"></i>
+                        <div class="progreso-info">
+                            <span class="progreso-label">Ejercicios Completados</span>
+                            <span class="progreso-valor">{{ ejercicios_completados }}</span>
+                        </div>
+                    </div>
+                    <div class="progreso-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="progreso-info">
+                            <span class="progreso-label">Objetivos Alcanzados</span>
+                            <span class="progreso-valor">{{ objetivos_alcanzados }}</span>
+                        </div>
+                    </div>
+                    <div class="progreso-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="progreso-info">
+                            <span class="progreso-label">Sesiones este Mes</span>
+                            <span class="progreso-valor">{{ sesiones_mes }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Próximo Entrenamiento -->
+            <div class="dashboard-card">
+                <h2>Próximo Entrenamiento</h2>
+                {% if proximo_entrenamiento %}
+                <div class="proximo-entrenamiento">
+                    <div class="entrenamiento-info">
+                        <h3>{{ proximo_entrenamiento.nombre }}</h3>
+                        <p>{{ proximo_entrenamiento.descripcion }}</p>
+                        <div class="entrenamiento-musculos">
+                            {% for musculo in proximo_entrenamiento.musculos %}
+                            <span class="musculo-tag">{{ musculo }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="iniciarEntrenamiento({{ proximo_entrenamiento.id }})">
+                        <i class="fas fa-play"></i> Iniciar
+                    </button>
+                </div>
+                {% else %}
+                <p class="no-entrenamiento">No hay entrenamientos programados</p>
+                {% endif %}
+            </div>
+            
+            <!-- Objetivos Activos -->
+            <div class="dashboard-card">
+                <h2>Objetivos Activos</h2>
+                <div class="objetivos-activos">
+                    {% for objetivo in objetivos_activos %}
+                    <div class="objetivo-item">
+                        <div class="objetivo-info">
+                            <h3>{{ objetivo.ejercicio.nombre }}</h3>
+                            <p>{{ objetivo.tipo|title }}: {{ objetivo.valor_actual }}/{{ objetivo.valor_objetivo }}</p>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ objetivo.progreso }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Último Progreso -->
+            <div class="dashboard-card">
+                <h2>Último Progreso</h2>
+                <div class="ultimo-progreso">
+                    {% if ultimo_progreso %}
+                    <div class="progreso-grafico" id="progreso-grafico"></div>
+                    {% else %}
+                    <p class="no-progreso">No hay datos de progreso</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Rutinas Complementarias -->
+            <div class="dashboard-card rutinas-complementarias">
+                <h2>RUTINAS COMPLEMENTARIAS</h2>
+                <div class="rutinas-grid">
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <h3>Cardio HIIT</h3>
+                        <p>Intervalos de alta intensidad para mejorar resistencia y quemar grasa</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='hiit') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Arnold</h3>
+                        <p>Rutina clásica de Arnold Schwarzenegger para hipertrofia</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='arnold') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Weider</h3>
+                        <p>Sistema de entrenamiento para principiantes</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='weider') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <h3>Fuerza</h3>
+                        <p>Programa enfocado en el desarrollo de fuerza máxima</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='fuerza') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Full Body</h3>
+                        <p>Entrenamiento completo que trabaja todo el cuerpo en cada sesión</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='full-body') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3>Push-Pull</h3>
+                        <p>Sistema de entrenamiento que divide los ejercicios en empuje y tracción</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='push-pull') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Hipertrofia</h3>
+                        <p>Programa específico para el desarrollo muscular</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='hipertrofia') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-yoga"></i>
+                        </div>
+                        <h3>Movilidad</h3>
+                        <p>Ejercicios de movilidad y flexibilidad para mejorar el rango de movimiento</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='movilidad') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+
+                    <div class="rutina-card">
+                        <div class="rutina-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3>Core</h3>
+                        <p>Fortalecimiento del core para mejor estabilidad y rendimiento</p>
+                        <a href="{{ url_for('rutina_especifica', tipo='core') }}" class="btn-rutina">Ver Rutina</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <div class="biometric-control">
+            <h2>Calculadora de Entrenamiento</h2>
+            <form id="biometric-form">
+                <div class="form-group">
+                    <label for="peso">Peso Corporal (kg):</label>
+                    <input type="number" id="peso" name="peso" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="altura">Altura (cm):</label>
+                    <input type="number" id="altura" name="altura" required>
+                </div>
+                <div class="form-group">
+                    <label for="edad">Edad:</label>
+                    <input type="number" id="edad" name="edad" required>
+                </div>
+                <div class="form-group">
+                    <label for="genero">Género:</label>
+                    <select id="genero" name="genero" required>
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nivel">Nivel de Actividad:</label>
+                    <select id="nivel" name="nivel" required>
+                        <option value="sedentario">Sedentario</option>
+                        <option value="ligero">Ligero</option>
+                        <option value="moderado">Moderado</option>
+                        <option value="activo">Activo</option>
+                        <option value="muy_activo">Muy Activo</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-calculate">
+                    <i class="fas fa-calculator"></i> Calcular
+                </button>
+            </form>
+            
+            <div class="results" id="results" style="display: none;">
+                <h3>Resultados</h3>
+                <div class="result-item">
+                    <span class="result-label">TMB:</span>
+                    <span class="result-value" id="tmb-result">0 kcal</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Calorías Diarias:</span>
+                    <span class="result-value" id="calorias-result">0 kcal</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">IMC:</span>
+                    <span class="result-value" id="imc-result">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.main-container {
+            display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.content-wrapper {
+    flex: 1;
+}
+
+.dashboard-grid {
+            display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+    margin-top: 2rem;
+        }
+
+.dashboard-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+.dashboard-card h2 {
+            color: var(--color-fuego);
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+.progreso-resumen {
+            display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+        }
+
+.progreso-item {
+            display: flex;
+    align-items: center;
+    gap: 1rem;
+            padding: 1rem;
+    background: rgba(255, 77, 0, 0.1);
+            border-radius: 5px;
+}
+
+.progreso-item i {
+    font-size: 2rem;
+            color: var(--color-fuego);
+}
+
+.progreso-info {
+            display: flex;
+            flex-direction: column;
+}
+
+.progreso-label {
+    font-size: 0.9rem;
+            color: var(--color-texto-secundario);
+        }
+
+.progreso-valor {
+    font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-texto);
+}
+
+.proximo-entrenamiento {
+            display: flex;
+            flex-direction: column;
+    gap: 1rem;
+}
+
+.entrenamiento-info h3 {
+    color: var(--color-texto);
+    margin-bottom: 0.5rem;
+}
+
+.entrenamiento-info p {
+            color: var(--color-texto-secundario);
+            margin-bottom: 1rem;
+}
+
+.entrenamiento-musculos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.musculo-tag {
+    background: rgba(255, 77, 0, 0.2);
+    color: var(--color-fuego-claro);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.no-entrenamiento {
+    color: var(--color-texto-secundario);
+            text-align: center;
+            padding: 2rem;
+}
+
+.objetivos-activos {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.objetivo-item {
+    background: rgba(255, 77, 0, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+}
+
+.objetivo-info h3 {
+            color: var(--color-texto);
+            margin-bottom: 0.5rem;
+        }
+
+.objetivo-info p {
+    color: var(--color-texto-secundario);
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+            overflow: hidden;
+        }
+
+.progress {
+            height: 100%;
+    background: linear-gradient(90deg, var(--color-fuego), var(--color-fuego-claro));
+    transition: width 0.3s ease;
+}
+
+.ultimo-progreso {
+    min-height: 200px;
+}
+
+.progreso-grafico {
+            width: 100%;
+    height: 200px;
+}
+
+.no-progreso {
+    color: var(--color-texto-secundario);
+    text-align: center;
+            padding: 2rem;
+}
+
+.rutinas-complementarias {
+    grid-column: 1 / -1;
+    padding: 2rem;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    margin-top: 2rem;
+}
+
+.rutinas-complementarias h2 {
+    color: #ff4d00;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.rutinas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.rutina-card {
+    background-color: rgba(51, 25, 15, 0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 77, 0, 0.2);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.rutina-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 77, 0, 0.3);
+    border-color: #ff4d00;
+}
+
+.rutina-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #ff4d00;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rutina-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.rutina-card h3 {
+    color: #ff4d00;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.rutina-card p {
+    color: #cccccc;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.btn-rutina {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background-color: #ff4d00;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-rutina:hover {
+    background-color: #ff6a33;
+    color: white;
+    text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+    .main-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .sidebar {
+            margin-top: 2rem;
+        }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .progreso-resumen {
+        grid-template-columns: 1fr;
+    }
+    .rutinas-grid {
+        grid-template-columns: 1fr;
+    }
+    .rutina-card {
+        padding: 1rem;
+    }
+        }
+    </style>
+
+    <script>
+// Inicializar el gráfico de progreso
+{% if ultimo_progreso %}
+const progresoData = {{ ultimo_progreso|tojson }};
+                const trace = {
+    x: progresoData.fechas,
+    y: progresoData.valores,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                line: {
+                    color: '#ff4d00'
+    },
+    marker: {
+                    color: '#ff8533'
+                }
+            };
+
+            const layout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+    font: {
+        color: '#ffffff'
+    },
+    margin: {
+        t: 10,
+        b: 30,
+        l: 40,
+        r: 10
+    }
+};
+
+Plotly.newPlot('progreso-grafico', [trace], layout);
+{% endif %}
+
+// Calculadora de biométricos
+document.getElementById('biometric-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const peso = parseFloat(document.getElementById('peso').value);
+    const altura = parseFloat(document.getElementById('altura').value);
+    const edad = parseInt(document.getElementById('edad').value);
+    const genero = document.getElementById('genero').value;
+    const nivel = document.getElementById('nivel').value;
+    
+    // Calcular TMB (Fórmula de Harris-Benedict)
+    let tmb;
+    if (genero === 'masculino') {
+        tmb = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad);
+    } else {
+        tmb = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * edad);
+    }
+    
+    // Factor de actividad
+    const factores = {
+        sedentario: 1.2,
+        ligero: 1.375,
+        moderado: 1.55,
+        activo: 1.725,
+        muy_activo: 1.9
+    };
+    
+    const calorias = tmb * factores[nivel];
+    
+    // Calcular IMC
+    const alturaMetros = altura / 100;
+    const imc = peso / (alturaMetros * alturaMetros);
+    
+    // Mostrar resultados
+    document.getElementById('tmb-result').textContent = `${Math.round(tmb)} kcal`;
+    document.getElementById('calorias-result').textContent = `${Math.round(calorias)} kcal`;
+    document.getElementById('imc-result').textContent = imc.toFixed(1);
+    document.getElementById('results').style.display = 'block';
+});
+
+// Función para iniciar entrenamiento
+function iniciarEntrenamiento(id) {
+    window.location.href = `/entrenamiento/${id}`;
+}
+
+function verRutina(tipo) {
+    // Aquí puedes agregar la lógica para mostrar los detalles de cada rutina
+    const rutinas = {
+        'hiit': {
+            titulo: 'Rutina HIIT',
+            ejercicios: [
+                { nombre: 'Burpees', duracion: '30 segundos' },
+                { nombre: 'Descanso', duracion: '15 segundos' },
+                { nombre: 'Mountain Climbers', duracion: '30 segundos' },
+                { nombre: 'Descanso', duracion: '15 segundos' },
+                { nombre: 'Jumping Jacks', duracion: '30 segundos' },
+                { nombre: 'Descanso', duracion: '15 segundos' }
+            ]
+        },
+        'movilidad': {
+            titulo: 'Rutina de Movilidad',
+            ejercicios: [
+                { nombre: 'Cat-Cow Stretch', duracion: '1 minuto' },
+                { nombre: 'World\'s Greatest Stretch', duracion: '1 minuto/lado' },
+                { nombre: 'Shoulder Dislocates', duracion: '10 repeticiones' },
+                { nombre: 'Hip Circles', duracion: '30 segundos/lado' }
+            ]
+        },
+        'core': {
+            titulo: 'Rutina de Core',
+            ejercicios: [
+                { nombre: 'Plancha', duracion: '45 segundos' },
+                { nombre: 'Russian Twists', duracion: '30 repeticiones' },
+                { nombre: 'Dead Bug', duracion: '12 repeticiones/lado' },
+                { nombre: 'Bird Dog', duracion: '10 repeticiones/lado' }
+            ]
+        }
+    };
+
+    const rutina = rutinas[tipo];
+    if (rutina) {
+        let ejerciciosHTML = rutina.ejercicios.map(ej => 
+            `<div class="ejercicio-item">
+                <span class="ejercicio-nombre">${ej.nombre}</span>
+                <span class="ejercicio-duracion">${ej.duracion}</span>
+            </div>`
+        ).join('');
+
+        Swal.fire({
+            title: rutina.titulo,
+            html: `<div class="rutina-detalles">${ejerciciosHTML}</div>`,
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#ff4d00',
+            background: '#1a1a1a',
+            color: '#ffffff'
+        });
+    }
+}
+    </script>
+{% endblock %}
