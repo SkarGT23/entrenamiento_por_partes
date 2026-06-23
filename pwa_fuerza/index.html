@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Fuerza365 - Entrena con Fuego y Hierro</title>
+  
+  <!-- Manifest & PWA Configuration -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#FF5500">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fuerza365">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-logo">
+      <i class="fa-solid fa-fire logo-icon"></i>
+      <span class="logo-text">FUERZA<span class="highlight">365</span></span>
+    </div>
+    <div class="header-status">
+      <span id="header-user">Invitado</span>
+      <i class="fa-solid fa-user-circle user-icon" onclick="switchTab('ajustes')"></i>
+    </div>
+  </header>
+
+  <!-- Main Content Container (SPA) -->
+  <main class="app-content">
+
+    <!-- TAB 1: DASHBOARD (HOME) -->
+    <div id="tab-dashboard" class="tab-page active">
+      <section class="welcome-section">
+        <h1 class="page-title">¡Hola, <span id="welcome-name">Campeón</span>!</h1>
+        <p class="subtitle">"Forjado en hierro, templado en fuego". Hoy toca superarse.</p>
+      </section>
+
+      <!-- Resumen de Métricas Rápidas -->
+      <div class="metrics-grid">
+        <div class="metric-card bg-gradient-purple">
+          <i class="fa-solid fa-dumbbell metric-card-icon"></i>
+          <span class="metric-value" id="stats-total-entrenos">0</span>
+          <span class="metric-label">Series Registradas</span>
+        </div>
+        <div class="metric-card bg-gradient-blue">
+          <i class="fa-solid fa-medal metric-card-icon"></i>
+          <span class="metric-value" id="stats-total-objetivos">0</span>
+          <span class="metric-label">Retos Completados</span>
+        </div>
+        <div class="metric-card bg-gradient-coral">
+          <i class="fa-solid fa-scale-balanced metric-card-icon"></i>
+          <span class="metric-value" id="stats-current-weight">75.0</span>
+          <span class="metric-label">Peso Corporal (kg)</span>
+        </div>
+      </div>
+
+      <!-- Sección de Objetivos -->
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-bullseye"></i> Tus Metas Activas</h2>
+          <button class="btn-icon" onclick="openModal('modal-nuevo-objetivo')"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div id="dashboard-goals-list" class="goals-container">
+          <!-- Dinámico -->
+        </div>
+      </div>
+
+      <!-- Accesos Rápidos (Tabata destacado como herramienta independiente) -->
+      <div class="section-container">
+        <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Herramientas e Inicio Rápido</h2>
+        <div class="quick-actions">
+          <button class="quick-btn" onclick="switchTab('entreno')">
+            <i class="fa-solid fa-calendar-plus color-purple"></i>
+            <span>Plan Fuerza</span>
+          </button>
+          <button class="quick-btn" onclick="openTimerTab()" style="border-color: rgba(255, 85, 0, 0.3); background: rgba(255, 85, 0, 0.04);">
+            <i class="fa-solid fa-stopwatch color-coral" style="filter: drop-shadow(0 0 4px var(--primary));"></i>
+            <span style="font-weight: 700;">Tabata Timer</span>
+          </button>
+          <button class="quick-btn" onclick="switchTab('retos')">
+            <i class="fa-solid fa-person-running color-blue"></i>
+            <span>Hacer Retos</span>
+          </button>
+          <button class="quick-btn" onclick="switchTab('progreso')">
+            <i class="fa-solid fa-chart-line color-green"></i>
+            <span>Evolución</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ENTRENO -->
+    <div id="tab-entreno" class="tab-page">
+      <div class="entreno-nav-tabs">
+        <button class="sub-tab-btn active" onclick="switchSubTab('sub-generator')">Plan Fuerza</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('sub-custom-workout')">Mis Rutinas</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('sub-logger')">Series Rápidas</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('sub-routines')">Rutinas Clásicas</button>
+      </div>
+
+      <!-- SUB-TAB 1: Generador de Plan de Fuerza -->
+      <div id="sub-generator" class="sub-tab-content active">
+        <div class="card glass">
+          <h2 class="card-title"><i class="fa-solid fa-magic-wand-sparkles"></i> Generador de Fuerza Anual</h2>
+          <p class="card-text">Diseña tu plan de sobrecarga progresiva basado en tu fuerza máxima real (1RM).</p>
+          
+          <form id="generator-form" class="form-grid">
+            <div class="form-group">
+              <label for="gen-exercise">Ejercicio</label>
+              <select id="gen-exercise" class="form-input"></select>
+            </div>
+            
+            <div class="form-group">
+              <label for="gen-rm">Tu 1RM Estimado (kg)</label>
+              <div class="input-helper-container">
+                <input type="number" id="gen-rm" value="60" class="form-input" min="1" step="0.5">
+                <button type="button" class="btn-secondary btn-small" onclick="openRmCalculator()">Calcular 1RM</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="gen-days">Días de Entrenamiento Semanales</label>
+              <select id="gen-days" class="form-input">
+                <option value="3" selected>3 Días por semana</option>
+                <option value="4">4 Días por semana</option>
+                <option value="5">5 Días por semana</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="gen-months">Duración del Plan (Meses)</label>
+              <input type="number" id="gen-months" value="3" class="form-input" min="1" max="12">
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="btn-primary"><i class="fa-solid fa-calendar-check"></i> Generar Calendario de Fuerza</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Resultados del Plan -->
+        <div id="generator-results" class="section-container hidden">
+          <div class="results-header">
+            <h3>Tu Plan Generado</h3>
+            <button class="btn-secondary btn-small" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir</button>
+          </div>
+          <div class="card glass text-center highlight-border" id="estimation-card">
+            <!-- Estimación -->
+          </div>
+          
+          <div class="plan-schedule-container" id="plan-weeks-grid">
+            <!-- Semanas dinámicas -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 2: CREADOR Y TRACKER DE RUTINAS PROPIAS (NUEVO) -->
+      <div id="sub-custom-workout" class="sub-tab-content">
+        
+        <!-- Vista 2A: Tracker Activo (Tachado de series en vivo) -->
+        <div id="routine-active-tracker-view" class="active-tracker-box hidden">
+          <div class="section-header">
+            <h2 id="tracker-routine-name">Entrenamiento Activo</h2>
+            <button class="btn-danger btn-small" onclick="cancelActiveWorkout()"><i class="fa-solid fa-ban"></i> Cancelar</button>
+          </div>
+          <div class="card glass highlight-border">
+            <p class="card-text"><i class="fa-solid fa-circle-info"></i> Tacha cada serie conforme la termines. ¡Puedes editar el peso levantado!</p>
+            <div id="tracker-exercises-container">
+              <!-- Dinámico (Ejercicios y series a tachar) -->
+            </div>
+            <button class="btn-primary btn-large mt-20" onclick="finishActiveWorkout()"><i class="fa-solid fa-circle-check"></i> Terminar Entrenamiento</button>
+          </div>
+        </div>
+
+        <!-- Vista 2B: Panel Principal de Mis Rutinas (Listado + Constructor) -->
+        <div id="routine-main-view">
+          <div class="section-header">
+            <h3>Tus Rutinas Personalizadas</h3>
+            <button class="btn-primary btn-small" onclick="showRoutineBuilder(true)"><i class="fa-solid fa-plus"></i> Crear Rutina</button>
+          </div>
+          
+          <div id="custom-routines-list" class="routines-grid">
+            <!-- Listado de rutinas del usuario -->
+          </div>
+
+          <!-- Formulario del Creador de Rutinas (Constructor) -->
+          <div id="custom-routine-builder" class="card glass mt-20 hidden">
+            <div class="section-header">
+              <h3 class="card-title"><i class="fa-solid fa-hammer"></i> Diseñar Nueva Rutina</h3>
+              <button class="btn-icon" onclick="showRoutineBuilder(false)">&times;</button>
+            </div>
+            
+            <form id="routine-builder-form" class="form-grid">
+              <div class="form-group full-width">
+                <label for="builder-routine-name-input">Nombre de la Rutina</label>
+                <input type="text" id="builder-routine-name-input" placeholder="Ej: Lunes - Tirón / Espalda" class="form-input" required>
+              </div>
+
+              <!-- Selector y Buscador de Ejercicios -->
+              <div class="form-group full-width">
+                <label>Añadir Ejercicios a la Rutina</label>
+                <!-- Botonera de Filtros -->
+                <div class="filter-buttons-row">
+                  <button type="button" class="filter-chip active" id="filter-all" onclick="filterBuilderExercises('todos')">Todos</button>
+                  <button type="button" class="filter-chip" id="filter-libre" onclick="filterBuilderExercises('libre')"><i class="fa-solid fa-dumbbell"></i> Libres</button>
+                  <button type="button" class="filter-chip" id="filter-maquina" onclick="filterBuilderExercises('maquina')"><i class="fa-solid fa-gears"></i> Máquinas</button>
+                  <button type="button" class="filter-chip" id="filter-corporal" onclick="filterBuilderExercises('corporal')"><i class="fa-solid fa-child"></i> Corporal</button>
+                </div>
+                
+                <div class="builder-exercises-list" id="builder-searchable-exercises">
+                  <!-- Dinámico (Lista de ejercicios con botón "+ Añadir") -->
+                </div>
+              </div>
+
+              <!-- Lista de Ejercicios Agregados en la Rutina -->
+              <div class="form-group full-width">
+                <h4 class="color-purple">Ejercicios en la Rutina:</h4>
+                <div class="builder-selected-exercises" id="builder-selected-exercises-container">
+                  <p class="text-secondary text-center" style="font-size:12px;" id="builder-empty-msg">No has añadido ningún ejercicio aún.</p>
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <button type="submit" class="btn-primary btn-large"><i class="fa-solid fa-floppy-disk"></i> Guardar Rutina</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 3: Registrador Rápido de Entrenamientos -->
+      <div id="sub-logger" class="sub-tab-content">
+        <div class="card glass">
+          <h2 class="card-title"><i class="fa-solid fa-pen-to-square"></i> Registro de Serie Rápida</h2>
+          <p class="card-text">Guarda un levantamiento rápido para actualizar tu 1RM de forma directa sin planificaciones.</p>
+
+          <form id="logger-form" class="form-grid">
+            <div class="form-group">
+              <label for="log-muscle">Grupo Muscular</label>
+              <select id="log-muscle" class="form-input" onchange="filterLogExercises()"></select>
+            </div>
+            
+            <div class="form-group">
+              <label for="log-exercise">Ejercicio</label>
+              <select id="log-exercise" class="form-input"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="log-weight">Peso Levantado (kg)</label>
+              <input type="number" id="log-weight" value="50" class="form-input" min="0" step="0.5">
+            </div>
+
+            <div class="form-group">
+              <label for="log-reps">Repeticiones Realizadas</label>
+              <input type="number" id="log-reps" value="8" class="form-input" min="1">
+            </div>
+
+            <div class="form-group full-width">
+              <label for="log-notes">Notas / Sensaciones</label>
+              <textarea id="log-notes" placeholder="Ej: Muy buena técnica, explosivo" class="form-input" rows="2"></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> Registrar Serie</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Últimos entrenos cargados -->
+        <div class="section-container">
+          <h3>Últimas series registradas</h3>
+          <div id="recent-logs-list" class="recent-logs-grid">
+            <!-- Dinámico -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 4: Rutinas Clásicas -->
+      <div id="sub-routines" class="sub-tab-content">
+        <div class="section-container">
+          <h2 class="section-title"><i class="fa-solid fa-book-open"></i> Rutinas Complementarias</h2>
+          <p class="subtitle">Sistemas clásicos cargados desde tu repositorio original.</p>
+          <div id="routines-list" class="routines-grid">
+            <!-- Dinámico -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: RETOS (CROSSFIT, RUNNING Y COMBA - COMPLETAMENTE NUEVO) -->
+    <div id="tab-retos" class="tab-page">
+      <section class="section-container">
+        <h1 class="page-title">Sección de Retos</h1>
+        <p class="subtitle">Entrenamientos aeróbicos de running, rutinas de comba y WODs funcionales de CrossFit.</p>
+      </section>
+
+      <div class="entreno-nav-tabs">
+        <button class="sub-tab-btn active" onclick="switchRetosSubTab('retos-running')">Running Resistencia</button>
+        <button class="sub-tab-btn" onclick="switchRetosSubTab('retos-comba')">Salto de Comba</button>
+        <button class="sub-tab-btn" onclick="switchRetosSubTab('retos-crossfit')">CrossFit WODs</button>
+      </div>
+
+      <!-- SUB-RETOS: RUNNING -->
+      <div id="retos-running" class="sub-tab-content active">
+        <div class="challenges-grid" id="running-challenges-container">
+          <!-- Dinámico (Tarjetas de retos de Running 2K, 5K, 7K, 10K, 12K con medalla de oro) -->
+        </div>
+      </div>
+
+      <!-- SUB-RETOS: COMBA -->
+      <div id="retos-comba" class="sub-tab-content">
+        <div class="challenges-grid" id="comba-challenges-container">
+          <!-- Dinámico (Desafíos de saltos y rutinas comba) -->
+        </div>
+      </div>
+
+      <!-- SUB-RETOS: CROSSFIT WODS -->
+      <div id="retos-crossfit" class="sub-tab-content">
+        <div class="wod-list-grid" id="crossfit-wods-container">
+          <!-- Dinámico (Cindy, Chelsea, Angie, Barbara, Murph con cronómetros) -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PROGRESO -->
+    <div id="tab-progreso" class="tab-page">
+      <section class="section-container">
+        <h1 class="page-title">Tu Progreso</h1>
+        <p class="subtitle">Gráficos de evolución de peso y 1RM históricos.</p>
+      </section>
+
+      <div class="card glass">
+        <div class="chart-controls">
+          <label for="progress-exercise-select">Selecciona Ejercicio:</label>
+          <select id="progress-exercise-select" class="form-input" onchange="renderProgressCharts()"></select>
+        </div>
+        <div class="chart-container">
+          <canvas id="rmProgressChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card glass">
+        <h3 class="card-title"><i class="fa-solid fa-scale-balanced"></i> Peso Corporal</h3>
+        <div class="chart-container">
+          <canvas id="weightProgressChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Historial de logs -->
+      <div class="section-container">
+        <div class="section-header">
+          <h3>Historial de Registros</h3>
+          <button class="btn-secondary btn-small" onclick="clearAllHistorial()"><i class="fa-solid fa-trash-can"></i> Limpiar Todo</button>
+        </div>
+        <div class="history-table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Ejercicio</th>
+                <th>Peso</th>
+                <th>Reps</th>
+                <th>1RM</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <!-- Dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: GALERÍA -->
+    <div id="tab-galeria" class="tab-page">
+      <section class="section-container">
+        <h1 class="page-title">Galería de Evolución</h1>
+        <p class="subtitle">Registra tu progreso visual y compara fotos.</p>
+      </section>
+
+      <div class="card glass">
+        <h3 class="card-title"><i class="fa-solid fa-upload"></i> Subir Foto de Progreso</h3>
+        <form id="gallery-form" class="form-grid">
+          <div class="form-group full-width">
+            <label for="gallery-file" class="file-upload-label">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Seleccionar o Tomar Foto
+            </label>
+            <input type="file" id="gallery-file" accept="image/*" class="file-upload-input" onchange="previewGalleryImage(event)">
+            <div id="gallery-preview" class="image-preview-container hidden">
+              <img id="preview-img" src="" alt="Vista previa">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gallery-category">Categoría / Vista</label>
+            <select id="gallery-category" class="form-input">
+              <option value="frontal">Frontal</option>
+              <option value="perfil">Perfil / Lateral</option>
+              <option value="espalda">Espalda</option>
+              <option value="general" selected>General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="gallery-desc">Descripción (opcional)</label>
+            <input type="text" id="gallery-desc" placeholder="Ej: Semana 8 de entrenamiento" class="form-input">
+          </div>
+
+          <div class="form-group full-width">
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-image"></i> Guardar en mi Galería</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Comparador de Fotos -->
+      <div class="section-container">
+        <div class="section-header">
+          <h3 class="section-title"><i class="fa-solid fa-images"></i> Comparar Cambios</h3>
+          <button class="btn-secondary btn-small" onclick="openPhotoComparison()"><i class="fa-solid fa-arrows-left-right"></i> Comparar Side-by-Side</button>
+        </div>
+      </div>
+
+      <!-- Grid de Fotos -->
+      <div class="section-container">
+        <h3>Tu Historial Visual</h3>
+        <div id="photos-grid" class="photos-masonry">
+          <!-- Dinámico -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: AJUSTES & BIOMETRÍA (FUSIÓN UX PARA MÓVIL) -->
+    <div id="tab-ajustes" class="tab-page">
+      <section class="section-container">
+        <h1 class="page-title">Perfil & Medidas</h1>
+        <p class="subtitle">Personaliza tu cuenta, calcula métricas biométricas y controla tus datos.</p>
+      </section>
+
+      <!-- SECCIÓN A: CALCULADORA BIOMÉTRICA (FUSIONADA AQUÍ) -->
+      <div class="card glass">
+        <h3 class="card-title"><i class="fa-solid fa-calculator"></i> Calculadora Biométrica e IMC</h3>
+        <p class="card-text">Introduce tus datos físicos generales para calcular tu grasa corporal aproximada y tus requerimientos de calorías diarias.</p>
+        
+        <form id="biometric-form" class="form-grid">
+          <div class="form-group">
+            <label for="bio-gender">Sexo</label>
+            <select id="bio-gender" class="form-input">
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bio-age">Edad (Años)</label>
+            <input type="number" id="bio-age" value="25" class="form-input" min="1" max="100">
+          </div>
+
+          <div class="form-group">
+            <label for="bio-height">Altura (cm)</label>
+            <input type="number" id="bio-height" value="175" class="form-input" min="50" max="250">
+          </div>
+
+          <div class="form-group">
+            <label for="bio-weight">Peso Actual (kg)</label>
+            <input type="number" id="bio-weight" value="75" class="form-input" min="1" step="0.1">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="bio-activity">Nivel de Actividad Diaria</label>
+            <select id="bio-activity" class="form-input">
+              <option value="sedentario">Sedentario (Trabajo de oficina / Poco ejercicio)</option>
+              <option value="ligero" selected>Ligero (Ejercicio ligero 1-3 días/semana)</option>
+              <option value="moderado">Moderado (Ejercicio moderado 3-5 días/semana)</option>
+              <option value="activo">Activo (Ejercicio intenso 6-7 días/semana)</option>
+              <option value="muy_activo">Muy Activo (Trabajo físico pesado + Ejercicio diario)</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-square-poll-vertical"></i> Calcular composición y calorías</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Resultados Biométricos (FUSIONADOS AQUÍ) -->
+      <div id="biometric-results" class="section-container hidden">
+        <div class="metrics-grid">
+          <div class="metric-card glass">
+            <span class="metric-label">IMC Corporal</span>
+            <span class="metric-value text-purple" id="bio-result-imc">0</span>
+            <span class="metric-badge" id="bio-badge-imc">Normal</span>
+          </div>
+          <div class="metric-card glass">
+            <span class="metric-label">Grasa Corporal (%)</span>
+            <span class="metric-value text-coral" id="bio-result-grasa">0%</span>
+            <span class="metric-label" id="bio-result-musculo">Masa Magra: 0 kg</span>
+          </div>
+          <div class="metric-card glass">
+            <span class="metric-label">Calorías Mantenimiento</span>
+            <span class="metric-value text-green" id="bio-result-calorias">0 kcal</span>
+            <span class="metric-label">Para no subir ni bajar</span>
+          </div>
+        </div>
+
+        <div class="card glass text-center">
+          <h3 class="card-title">Composición Corporal Estimada</h3>
+          <div class="chart-container-doughnut">
+            <canvas id="bodyCompositionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN B: PERFIL DE USUARIO -->
+      <div class="card glass">
+        <h3 class="card-title"><i class="fa-solid fa-user-gear"></i> Perfil General</h3>
+        <form id="profile-form" class="form-grid">
+          <div class="form-group">
+            <label for="prof-nombre">Nombre</label>
+            <input type="text" id="prof-nombre" class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="prof-apellidos">Apellidos</label>
+            <input type="text" id="prof-apellidos" class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="prof-units">Unidades de Carga</label>
+            <select id="prof-units" class="form-input">
+              <option value="metrico">Métrico (kg, cm)</option>
+              <option value="imperial">Imperial (lbs, pulg)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="prof-theme">Tema Visual</label>
+            <select id="prof-theme" class="form-input" onchange="changeTheme(this.value)">
+              <option value="oscuro">Fuego Metálico y Acero</option>
+              <option value="neon">Neon Cyberpunk</option>
+              <option value="glass">Estilo Cristal Translúcido</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-check"></i> Actualizar Perfil</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SECCIÓN C: MEDIDAS DE CONTORNO MUSCULAR -->
+      <div class="card glass">
+        <h3 class="card-title"><i class="fa-solid fa-tape"></i> Contornos de Desarrollo Muscular</h3>
+        <p class="card-text">Registra tus medidas en centímetros para medir tu desarrollo muscular real en brazos, piernas y core.</p>
+        <form id="measures-form" class="form-grid">
+          <div class="form-group">
+            <label for="meas-brazo">Contorno de Brazo (cm)</label>
+            <input type="number" id="meas-brazo" class="form-input" min="0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="meas-pierna">Contorno de Pierna/Muslo (cm)</label>
+            <input type="number" id="meas-pierna" class="form-input" min="0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="meas-cintura">Contorno de Cintura (cm)</label>
+            <input type="number" id="meas-cintura" class="form-input" min="0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="meas-cadera">Contorno de Cadera (cm)</label>
+            <input type="number" id="meas-cadera" class="form-input" min="0" step="0.1">
+          </div>
+          <div class="form-group full-width">
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-tape"></i> Registrar Medidas</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SECCIÓN D: COPIAS DE SEGURIDAD -->
+      <div class="card glass">
+        <h3 class="card-title"><i class="fa-solid fa-database"></i> Copias de Seguridad y Respaldo</h3>
+        <p class="card-text">Exporta toda tu base de datos (entrenamientos, RM, objetivos, fotos guardadas) en un solo archivo JSON para restaurarlo en otro móvil.</p>
+        <div class="backup-actions">
+          <button class="btn-primary" onclick="window.dbManager.exportarBackup()">
+            <i class="fa-solid fa-file-export"></i> Exportar Copia (JSON)
+          </button>
+          <div class="import-wrapper">
+            <label for="import-file" class="btn-secondary">
+              <i class="fa-solid fa-file-import"></i> Importar Copia
+            </label>
+            <input type="file" id="import-file" accept=".json" onchange="handleImportBackup(event)" class="hidden">
+          </div>
+        </div>
+      </div>
+
+      <!-- Créditos de Proyecto -->
+      <footer class="settings-footer text-center">
+        <p>Retomado desde la versión Flask original de <strong>SkarGT23</strong></p>
+        <p>Fuerza365 PWA - Desarrollado en HTML5/CSS3/Vanilla JS</p>
+        <p class="version">Versión 2.0.0 (Fuego Metálico & CrossFit)</p>
+      </footer>
+    </div>
+  </main>
+
+  <!-- ==========================================
+       MODALES DE LA APLICACIÓN
+       ========================================== -->
+
+  <!-- MODAL: CÁLCULO DE 1RM DESDE PESO/REPS -->
+  <div id="modal-rm-calculator" class="modal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3>Calculadora de 1RM</h3>
+        <span class="modal-close" onclick="closeModal('modal-rm-calculator')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Introduce tu peso levantado y las repeticiones consecutivas para estimar tu 1RM teórico (fórmula de Epley).</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="calc-weight">Peso Levantado (kg)</label>
+            <input type="number" id="calc-weight" value="60" class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="calc-reps">Repeticiones Realizadas</label>
+            <input type="number" id="calc-reps" value="8" class="form-input" min="1" max="30">
+          </div>
+          <div class="form-group full-width text-center">
+            <h4 class="color-coral">Tu 1RM Estimado:</h4>
+            <span class="rm-result-value" id="rm-calc-result" style="font-size:32px; font-weight:800; color:var(--primary-light);">76.0 kg</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('modal-rm-calculator')">Cancelar</button>
+        <button class="btn-primary" onclick="applyCalculatedRm()">Usar este 1RM</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: TABATA TIMER (TEMPORIZADOR INDEPENDIENTE Y MÓVIL) -->
+  <div id="modal-tabata" class="modal full-screen-modal">
+    <div class="modal-content dark-theme-modal">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-stopwatch color-primary"></i> Temporizador Tabata</h3>
+        <span class="modal-close" id="tabata-close-btn" onclick="closeTabataTimer()">&times;</span>
+      </div>
+      <div class="modal-body text-center">
+        <!-- Controles de Configuración -->
+        <div id="tabata-setup" class="tabata-box">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Trabajo (Segundos)</label>
+              <input type="number" id="tabata-work" value="20" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>Descanso (Segundos)</label>
+              <input type="number" id="tabata-rest" value="10" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>Rondas / Sets</label>
+              <input type="number" id="tabata-rounds" value="8" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>Preparación (Segundos)</label>
+              <input type="number" id="tabata-prep" value="5" class="form-input">
+            </div>
+          </div>
+          <button class="btn-primary btn-large mt-20" onclick="startTabataTimer()"><i class="fa-solid fa-play"></i> Iniciar Tabata</button>
+        </div>
+
+        <!-- Pantalla Activa del Temporizador -->
+        <div id="tabata-active" class="tabata-display hidden">
+          <div class="tabata-status-label" id="tabata-current-state">PREPARACIÓN</div>
+          <div class="tabata-timer-number" id="tabata-countdown">05</div>
+          <div class="tabata-progress-info">
+            <span id="tabata-current-round">Ronda: 1 / 8</span>
+          </div>
+          <div class="tabata-controls-row">
+            <button class="btn-secondary" id="tabata-pause-btn" onclick="toggleTabataPause()"><i class="fa-solid fa-pause"></i> Pausar</button>
+            <button class="btn-danger" onclick="stopTabataTimer()"><i class="fa-solid fa-stop"></i> Detener</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALLES DE RETO / LOGGER DE MARCA (RUNNING / CROSSFIT) -->
+  <div id="modal-log-challenge" class="modal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3 id="challenge-modal-title">Registrar Marca</h3>
+        <span class="modal-close" onclick="closeModal('modal-log-challenge')">&times;</span>
+      </div>
+      <form id="challenge-modal-form">
+        <input type="hidden" id="challenge-modal-type-input">
+        <input type="hidden" id="challenge-modal-id-input">
+        
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group full-width" id="challenge-modal-description-box">
+              <!-- Se cargan detalles del WOD o Reto -->
+            </div>
+            
+            <!-- Entrada para CrossFit (Rondas completadas o Tiempo) y Running (Tiempo total) -->
+            <div class="form-group" id="challenge-input-weight-div">
+              <label for="challenge-log-score">Tu Marca Realizada</label>
+              <input type="text" id="challenge-log-score" placeholder="Ej: 24:35 (tiempo) o 14 (rondas)" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label for="challenge-log-date">Fecha de la Marca</label>
+              <input type="date" id="challenge-log-date" class="form-input">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal('modal-log-challenge')">Cancelar</button>
+          <button type="submit" class="btn-primary">Registrar Completado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NUEVO OBJETIVO -->
+  <div id="modal-nuevo-objetivo" class="modal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3>Añadir Nuevo Objetivo</h3>
+        <span class="modal-close" onclick="closeModal('modal-nuevo-objetivo')">&times;</span>
+      </div>
+      <form id="goal-modal-form">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="goal-type">Tipo de Objetivo</label>
+              <select id="goal-type" class="form-input">
+                <option value="peso">Peso Corporal (kg)</option>
+                <option value="fuerza">Levantamiento Fuerza (kg)</option>
+                <option value="entrenamientos">Frecuencia Semanal (Días)</option>
+                <option value="medidas">Reducción Cintura (cm)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goal-val">Valor Meta</label>
+              <input type="number" id="goal-val" value="70" class="form-input" min="0" step="0.1">
+            </div>
+            <div class="form-group full-width">
+              <label for="goal-date">Fecha Límite</label>
+              <input type="date" id="goal-date" class="form-input">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal('modal-nuevo-objetivo')">Cancelar</button>
+          <button type="submit" class="btn-primary">Añadir Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: COMPARADOR DE FOTOS -->
+  <div id="modal-photo-comparison" class="modal full-screen-modal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3>Comparador de Evolución Física</h3>
+        <span class="modal-close" onclick="closeModal('modal-photo-comparison')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">Selecciona dos fotos de tu galería para comparar tu evolución de forma directa lateral.</p>
+        <div class="comparison-selectors">
+          <div class="selector-box">
+            <label for="compare-photo-1">Foto Inicial (Antes)</label>
+            <select id="compare-photo-1" class="form-input" onchange="updateComparisonPhotos()"></select>
+          </div>
+          <div class="selector-box">
+            <label for="compare-photo-2">Foto Reciente (Después)</label>
+            <select id="compare-photo-2" class="form-input" onchange="updateComparisonPhotos()"></select>
+          </div>
+        </div>
+
+        <div class="photos-comparison-display">
+          <div class="comparison-panel">
+            <h4 id="compare-label-1">Antes</h4>
+            <div class="compare-img-box">
+              <img id="compare-img-1" src="" alt="Foto Antes" class="hidden">
+              <div class="img-placeholder" id="placeholder-1"><i class="fa-solid fa-image"></i> Sin foto elegida</div>
+            </div>
+          </div>
+          <div class="comparison-panel">
+            <h4 id="compare-label-2">Después</h4>
+            <div class="compare-img-box">
+              <img id="compare-img-2" src="" alt="Foto Después" class="hidden">
+              <div class="img-placeholder" id="placeholder-2"><i class="fa-solid fa-image"></i> Sin foto elegida</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeModal('modal-photo-comparison')">Cerrar Comparador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALLES DE RUTINA COMPLEMENTARIA -->
+  <div id="modal-routine-details" class="modal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3 id="routine-modal-title">Detalle de Rutina</h3>
+        <span class="modal-close" onclick="closeModal('modal-routine-details')">&times;</span>
+      </div>
+      <div class="modal-body" id="routine-modal-body" style="font-size: 13px;">
+        <!-- Dinámico -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeModal('modal-routine-details')">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar (Mobile Native Style with NEW "Retos" Tab) -->
+  <nav class="app-nav">
+    <button class="nav-item active" onclick="switchTab('dashboard')">
+      <i class="fa-solid fa-house nav-icon"></i>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('entreno')">
+      <i class="fa-solid fa-dumbbell nav-icon"></i>
+      <span class="nav-label">Entrenar</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('retos')">
+      <i class="fa-solid fa-trophy nav-icon"></i>
+      <span class="nav-label">Retos</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('progreso')">
+      <i class="fa-solid fa-chart-line nav-icon"></i>
+      <span class="nav-label">Progreso</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('galeria')">
+      <i class="fa-solid fa-images nav-icon"></i>
+      <span class="nav-label">Galería</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('ajustes')">
+      <i class="fa-solid fa-sliders nav-icon"></i>
+      <span class="nav-label">Ajustes</span>
+    </button>
+  </nav>
+
+  <!-- Audio elements for Tabata timer -->
+  <audio id="audio-beep" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
+  <audio id="audio-go" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
+
+  <!-- External JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Application Logic Scripts -->
+  <script src="db.js"></script>
+  <script src="algorithm.js"></script>
+  <script src="app.js"></script>
+  
+  <script>
+    // Service Worker Registration for Offline Native Experience
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker Fuerza365 registrado correctamente', reg.scope))
+          .catch(err => console.error('Error al registrar Service Worker', err));
+      });
+    }
+  </script>
+</body>
+</html>

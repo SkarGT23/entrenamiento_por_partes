@@ -1,0 +1,23 @@
+{
+  "name": "Fuerza365 - Entrenamiento de Fuerza Inteligente",
+  "short_name": "Fuerza365",
+  "description": "Calculador y bitácora de entrenamiento de fuerza anual basado en 1RM y sobrecarga progresiva.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B0C10",
+  "theme_color": "#8A2BE2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
